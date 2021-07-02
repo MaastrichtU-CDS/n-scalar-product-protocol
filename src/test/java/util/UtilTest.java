@@ -15,6 +15,7 @@ public class UtilTest extends TestCase {
     public void testMatrixDiagonalMultiplication() {
         // test various sizes of matrix, with various amounts of parties
         // max value calculated is in surplus of 100 ^ 100
+        // Diagonal of the matrices is filled according to the size of the matrix. so X[0][0] = 0, X[1][1] = 1 etc.
         for (int size = 1; size < 100; size++) {
             List<BigInteger[][]> matrices = new ArrayList<>();
             for (int parties = 0; parties < 100; parties++) {

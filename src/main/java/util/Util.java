@@ -11,6 +11,13 @@ public final class Util {
     private Util() {
     }
 
+    /**
+     * Multiply the diagonals of a list of square matrices and sum the resulting diagonal
+     *
+     * @param list       of matrices
+     * @param matrixSize size of any given matrix
+     * @return
+     */
     public static BigInteger matrixDiagonalMultiplication(List<BigInteger[][]> list, int matrixSize) {
         BigInteger res = BigInteger.ZERO;
         for (int i = 0; i < matrixSize; i++) {
