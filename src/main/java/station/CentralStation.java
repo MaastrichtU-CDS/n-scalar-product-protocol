@@ -34,21 +34,25 @@ public class CentralStation {
                 Collectors.toList()));
 
         // calculate partial result nth station
+
         for (DataStation nth : others) {
             List<DataStation> setMinusN = datastations.stream().filter(x -> x != nth).collect(Collectors.toList());
             partial = nth.localCalculationNthParty(setMinusN.stream().map(x -> x.getObfuscated()).collect(
                     Collectors.toList()), partial);
         }
+
+
         // determine subprotocols
         List<List<DataStation>> subprotocols = determineSubprotocols(datastations, active);
-
-        // run subprotocols and add results
-
         BigInteger temp = partial;
+        // run subprotocols and add results
         for (List<DataStation> subprotocol : subprotocols) {
-            partial = partial.add(calculateNPartyScalarProduct(subprotocol));
+            // each subprotocol needs to be multiplied by the difference in size with the current protocol
+            // e.g.a 4-party protocol with A, B C & D will have 2 subprotocols of ABRcRd and 1 with ARbRcRd
+            // so factor this in
+            BigInteger nFactor = BigInteger.valueOf(datastations.size() - subprotocol.size());
+            partial = partial.add(calculateNPartyScalarProduct(subprotocol).multiply(nFactor));
         }
-
         // remove V2 and return result
         return first.removeV2(partial);
     }

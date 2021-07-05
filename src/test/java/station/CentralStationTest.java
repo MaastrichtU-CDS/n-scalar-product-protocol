@@ -12,28 +12,27 @@ import static station.DataStationTest.createStation;
 import static util.Util.matrixDiagonalMultiplication;
 
 public class CentralStationTest {
-    private final int POPUlATION = 5;
-    private final int N = 3;
 
     @Test
     public void testCalculateNPartyScalarProduct() {
-        final int POPUlATION = 5;
-        final int N = 4;
+        for (int n = 2; n < 5; n++) {
+            for (int population = 2; population < 10; population++) {
+                List<DataStation> datastations = new ArrayList<>();
+                List<BigInteger[][]> datasets = new ArrayList<>();
+                for (int i = 0; i < n; i++) {
+                    BigInteger[][] data = createData(population);
+                    datastations.add(new DataStation(String.valueOf(i), data));
+                    datasets.add(data);
+                }
+                CentralStation central = new CentralStation(datastations);
 
-        List<DataStation> datastations = new ArrayList<>();
-        List<BigInteger[][]> datasets = new ArrayList<>();
-        for (int i = 0; i < N; i++) {
-            BigInteger[][] data = createData(POPUlATION);
-            datastations.add(new DataStation(String.valueOf(i), data));
-            datasets.add(data);
+                // calculate expected anwser:
+                BigInteger expected = matrixDiagonalMultiplication(datasets, datasets.get(0).length);
+                BigInteger result = central.calculateNPartyScalarProduct(datastations);
+
+                assertEquals(expected, result);
+            }
         }
-        CentralStation central = new CentralStation(datastations);
-
-        // calculate expected anwser:
-        BigInteger expected = matrixDiagonalMultiplication(datasets, datasets.get(0).length);
-        BigInteger result = central.calculateNPartyScalarProduct(datastations);
-
-        assertEquals(expected, result);
     }
 
     @Test
