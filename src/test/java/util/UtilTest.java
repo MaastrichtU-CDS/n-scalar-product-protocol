@@ -1,15 +1,15 @@
 package util;
 
-import junit.framework.TestCase;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static util.Util.matrixDiagonalMultiplication;
 
-public class UtilTest extends TestCase {
+public class UtilTest {
 
     @Test
     public void testMatrixDiagonalMultiplication() {
@@ -31,4 +31,5 @@ public class UtilTest extends TestCase {
             assertEquals(anwser, matrixDiagonalMultiplication(matrices, size));
         }
     }
+
 }

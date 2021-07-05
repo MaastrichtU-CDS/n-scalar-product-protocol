@@ -1,6 +1,6 @@
 package station;
 
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 import secret.Secret;
 import secret.SecretPart;
 
@@ -10,12 +10,14 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static secret.Secret.generateSecret;
 import static util.Util.matrixDiagonalMultiplication;
 
-public class DataStationTest extends TestCase {
+public class DataStationTest {
     private final int POPUlATION = 10;
 
+    @Test
     public void test2PartyCalculation() {
         BigInteger[][] A_data = createData(POPUlATION);
         DataStation stationA = new DataStation("1", A_data);
@@ -51,6 +53,7 @@ public class DataStationTest extends TestCase {
         assertEquals(expectedresult, result);
     }
 
+    @Test
     public void testGetObfuscated() {
         BigInteger[][] data = createData(POPUlATION);
 
@@ -70,7 +73,7 @@ public class DataStationTest extends TestCase {
         return new DataStation(id, createData(population));
     }
 
-    private static BigInteger[][] createData(int population) {
+    public static BigInteger[][] createData(int population) {
         BigInteger[][] data = new BigInteger[population][population];
 
         BigInteger[][] secretMatrix = new BigInteger[population][population];

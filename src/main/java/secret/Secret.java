@@ -30,20 +30,27 @@ public class Secret {
             BigInteger[][] matrix = new BigInteger[length][length];
             matrices.add(matrix);
             for (int i = 0; i < length; i++) {
-                matrix[i][i] = BigInteger.valueOf(random.nextInt(MAX) + 1);
+                for (int j = 0; j < length; j++) {
+                    if (i == j) {
+                        matrix[i][i] = BigInteger.valueOf(random.nextInt(MAX) + 1);
+                    } else {
+                        matrix[i][j] = BigInteger.ZERO;
+                    }
+                }
             }
         }
         BigInteger sum = matrixDiagonalMultiplication(matrices, length);
 
         List<BigInteger> rs = new ArrayList<>();
-        BigInteger substep = sum;
+        BigInteger remainder = sum;
         for (int i = 0; i < size - 1; i++) {
             BigInteger value = BigInteger.valueOf(
-                    random.nextInt(substep.add(BigInteger.valueOf(-1)).intValue()));
+                    random.nextInt(remainder.divide(BigInteger.valueOf(size - i - 1))
+                                           .intValue()) + 1);
             rs.add(value);
-            substep = substep.subtract(value);
+            remainder = remainder.subtract(value);
         }
-        rs.add(substep);
+        rs.add(remainder);
         SecretPart[] parts = new SecretPart[size];
         for (int i = 0; i < size; i++) {
             parts[i] = new SecretPart(matrices.get(i), rs.get(i), parties.get(i).getId());

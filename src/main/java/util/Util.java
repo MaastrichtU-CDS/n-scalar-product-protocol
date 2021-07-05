@@ -1,12 +1,9 @@
 package util;
 
-import cern.colt.matrix.linalg.Algebra;
-
 import java.math.BigInteger;
 import java.util.List;
 
 public final class Util {
-    private static Algebra algebra = new Algebra();
 
     private Util() {
     }

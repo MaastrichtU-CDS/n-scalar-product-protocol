@@ -1,16 +1,16 @@
 package secret;
 
-import junit.framework.TestCase;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import station.DataStation;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static util.Util.matrixDiagonalMultiplication;
 
-public class SecretTest extends TestCase {
+public class SecretTest {
 
     @Test
     public void testGenerateSecret() {

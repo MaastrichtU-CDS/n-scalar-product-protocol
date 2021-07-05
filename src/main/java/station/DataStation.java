@@ -3,6 +3,7 @@ package station;
 import secret.SecretPart;
 
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -25,6 +26,12 @@ public class DataStation extends Station {
         this.population = localData.length;
     }
 
+    public DataStation(DataStation station) {
+        this.id = station.getId();
+        this.localData = station.localData;
+        this.population = localData.length;
+    }
+
     public void setLocalSecret(SecretPart secret) {
         this.secret = secret;
         obfuscated = new BigInteger[localData.length][localData.length];
@@ -35,12 +42,12 @@ public class DataStation extends Station {
     }
 
     public BigInteger localCalculationFirstParty(List<BigInteger[][]> obfuscated) {
-        List<BigInteger[][]> fullList = obfuscated;
+        List<BigInteger[][]> fullList = new ArrayList<>(obfuscated);
         fullList.add(localData);
         Random random = new Random();
 
         this.V2 = BigInteger.valueOf(random.nextInt(MAX));
-        return BigInteger.valueOf(obfuscated.size() - 1).multiply(secret.getR())
+        return BigInteger.valueOf(obfuscated.size()).multiply(secret.getR())
                 .add(matrixDiagonalMultiplication(fullList, population)).subtract(V2);
     }
 
@@ -49,10 +56,10 @@ public class DataStation extends Station {
     }
 
     public BigInteger localCalculationNthParty(List<BigInteger[][]> obfuscated, BigInteger partial) {
-        List<BigInteger[][]> fullList = obfuscated;
+        List<BigInteger[][]> fullList = new ArrayList<>(obfuscated);
         fullList.add(secret.getMatrix());
         return partial.subtract(matrixDiagonalMultiplication(fullList, population))
-                .add(BigInteger.valueOf(obfuscated.size() - 1).multiply(secret.getR()));
+                .add(BigInteger.valueOf(obfuscated.size()).multiply(secret.getR()));
     }
 
     public String getId() {
