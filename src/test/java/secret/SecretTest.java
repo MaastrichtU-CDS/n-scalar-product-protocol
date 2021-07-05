@@ -2,6 +2,7 @@ package secret;
 
 import junit.framework.TestCase;
 import org.junit.Test;
+import station.DataStation;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -13,12 +14,12 @@ public class SecretTest extends TestCase {
 
     @Test
     public void testGenerateSecret() {
-        List<String> parties = new ArrayList<>();
+        List<DataStation> parties = new ArrayList<>();
         int length = 10;
         for (int i = 0; i < 10; i++) {
-            parties.add(String.valueOf(i));
+            parties.add(new DataStation(String.valueOf(i), new BigInteger[10][10]));
         }
-        Secret secret = Secret.generateSecret(length, parties);
+        Secret secret = Secret.generateSecret(parties);
 
         BigInteger sum = BigInteger.ZERO;
         List<BigInteger[][]> matrices = new ArrayList<>();

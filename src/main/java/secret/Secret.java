@@ -1,5 +1,7 @@
 package secret;
 
+import station.DataStation;
+
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,15 +21,16 @@ public class Secret {
         return parts;
     }
 
-    public static Secret generateSecret(int length, List<String> parties) {
+    public static Secret generateSecret(List<DataStation> parties) {
         List<BigInteger[][]> matrices = new ArrayList<>();
+        int length = parties.get(0).getPopulation();
         int size = parties.size();
         Random random = new Random();
-        for (String party : parties) {
+        for (DataStation party : parties) {
             BigInteger[][] matrix = new BigInteger[length][length];
             matrices.add(matrix);
             for (int i = 0; i < length; i++) {
-                matrix[i][i] = BigInteger.valueOf(random.nextInt(MAX));
+                matrix[i][i] = BigInteger.valueOf(random.nextInt(MAX) + 1);
             }
         }
         BigInteger sum = matrixDiagonalMultiplication(matrices, length);
@@ -43,7 +46,7 @@ public class Secret {
         rs.add(substep);
         SecretPart[] parts = new SecretPart[size];
         for (int i = 0; i < size; i++) {
-            parts[i] = new SecretPart(matrices.get(i), rs.get(i), parties.get(i));
+            parts[i] = new SecretPart(matrices.get(i), rs.get(i), parties.get(i).getId());
         }
         return new Secret(parts);
     }
