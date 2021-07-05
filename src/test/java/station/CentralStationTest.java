@@ -16,10 +16,10 @@ public class CentralStationTest {
     private final int N = 3;
 
     @Test
-    public void testCalculate3PartyScalarProduct() {
+    public void testCalculateNPartyScalarProduct() {
         final int POPUlATION = 5;
-        final int N = 3;
-        
+        final int N = 4;
+
         List<DataStation> datastations = new ArrayList<>();
         List<BigInteger[][]> datasets = new ArrayList<>();
         for (int i = 0; i < N; i++) {
@@ -28,28 +28,49 @@ public class CentralStationTest {
             datasets.add(data);
         }
         CentralStation central = new CentralStation(datastations);
-        SecretStation secretStation = new SecretStation();
-        secretStation.shareSecret(datastations);
 
         // calculate expected anwser:
         BigInteger expected = matrixDiagonalMultiplication(datasets, datasets.get(0).length);
-        BigInteger result = central.calculateNPartyScalarProduct(datastations, 0);
+        BigInteger result = central.calculateNPartyScalarProduct(datastations);
+
+        assertEquals(expected, result);
+    }
+
+    @Test
+    public void testCalculate3PartyScalarProduct() {
+        final int POPUlATION = 5;
+        final int N = 3;
+
+        List<DataStation> datastations = new ArrayList<>();
+        List<BigInteger[][]> datasets = new ArrayList<>();
+        for (int i = 0; i < N; i++) {
+            BigInteger[][] data = createData(POPUlATION);
+            datastations.add(new DataStation(String.valueOf(i), data));
+            datasets.add(data);
+        }
+        CentralStation central = new CentralStation(datastations);
+
+        // calculate expected anwser:
+        BigInteger expected = matrixDiagonalMultiplication(datasets, datasets.get(0).length);
+        BigInteger result = central.calculateNPartyScalarProduct(datastations);
 
         assertEquals(expected, result);
     }
 
     @Test
     public void testDetermineSubprotocols() {
-        List<DataStation> datastations = new ArrayList<>();
-        for (int i = 0; i < POPUlATION; i++) {
-            datastations.add(createStation(String.valueOf(i), POPUlATION));
-        }
-        CentralStation central = new CentralStation(datastations);
-        SecretStation secretStation = new SecretStation();
-        secretStation.shareSecret(datastations);
+        for (int population = 1; population < 10; population++) {
+            List<DataStation> datastations = new ArrayList<>();
+            for (int i = 0; i < population; i++) {
+                datastations.add(createStation(String.valueOf(i), population));
+            }
+            CentralStation central = new CentralStation(datastations);
+            SecretStation secretStation = new SecretStation();
+            secretStation.shareSecret(datastations);
 
-        List<List<DataStation>> subprotocols = central.determineSubprotocols(datastations, secretStation);
-        assertEquals(subprotocols.size(), calculateExpectedCombinations(POPUlATION).longValue());
+            List<List<DataStation>> subprotocols = central.determineSubprotocols(datastations, secretStation);
+            assertEquals(subprotocols.size(), calculateExpectedCombinations(population).longValue());
+        }
     }
 
     //calculates  n! / (x!(n−x)!) for every x >= 2 < n

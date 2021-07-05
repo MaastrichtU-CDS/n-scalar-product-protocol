@@ -43,10 +43,10 @@ public class Secret {
 
         List<BigInteger> rs = new ArrayList<>();
         BigInteger remainder = sum;
+        BigInteger max = sum.divide(BigInteger.valueOf(size));
         for (int i = 0; i < size - 1; i++) {
             BigInteger value = BigInteger.valueOf(
-                    random.nextInt(remainder.divide(BigInteger.valueOf(size - i - 1))
-                                           .intValue()) + 1);
+                    random.nextInt(max.intValue()) + 1);
             rs.add(value);
             remainder = remainder.subtract(value);
         }

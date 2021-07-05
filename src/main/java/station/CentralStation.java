@@ -11,17 +11,12 @@ import java.util.stream.Collectors;
 
 public class CentralStation {
     private List<DataStation> datastations;
-    private List<SecretStation> secretStations;
 
     public CentralStation(List<DataStation> datastations) {
         this.datastations = datastations;
-        secretStations = new ArrayList<>();
-        for (DataStation station : datastations) {
-            secretStations.add(new SecretStation());
-        }
     }
 
-    public BigInteger calculateNPartyScalarProduct(List<DataStation> datastations, int n) {
+    public BigInteger calculateNPartyScalarProduct(List<DataStation> datastations) {
         // determine first datastation:
         DataStation first = datastations.get(0);
 
@@ -29,7 +24,7 @@ public class CentralStation {
         List<DataStation> others = datastations.stream().filter(x -> x != first).collect(Collectors.toList());
 
         // determine the active secretStation
-        SecretStation active = secretStations.get(n);
+        SecretStation active = new SecretStation();
 
         // share secret
         active.shareSecret(datastations);
@@ -48,8 +43,10 @@ public class CentralStation {
         List<List<DataStation>> subprotocols = determineSubprotocols(datastations, active);
 
         // run subprotocols and add results
+
+        BigInteger temp = partial;
         for (List<DataStation> subprotocol : subprotocols) {
-            partial = partial.add(calculateNPartyScalarProduct(subprotocol, n + 1));
+            partial = partial.add(calculateNPartyScalarProduct(subprotocol));
         }
 
         // remove V2 and return result
