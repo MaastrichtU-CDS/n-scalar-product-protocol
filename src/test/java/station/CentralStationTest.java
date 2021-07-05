@@ -16,7 +16,10 @@ public class CentralStationTest {
     private final int N = 3;
 
     @Test
-    public void testCalculateNPartyScalarProduct() {
+    public void testCalculate3PartyScalarProduct() {
+        final int POPUlATION = 5;
+        final int N = 3;
+        
         List<DataStation> datastations = new ArrayList<>();
         List<BigInteger[][]> datasets = new ArrayList<>();
         for (int i = 0; i < N; i++) {
