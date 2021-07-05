@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static util.Util.matrixDiagonalMultiplication;
 
 public class SecretTest {
@@ -24,6 +25,7 @@ public class SecretTest {
         BigInteger sum = BigInteger.ZERO;
         List<BigInteger[][]> matrices = new ArrayList<>();
         for (SecretPart part : secret.getParts()) {
+            assertNotEquals(part.getR(), BigInteger.ZERO);
             sum = sum.add(part.getR());
             matrices.add(part.getMatrix());
         }
