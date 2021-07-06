@@ -47,7 +47,7 @@ public class DataStationTest {
         BigInteger partial = stationB.localCalculationFirstParty(list);
         List<BigInteger[][]> list2 = new ArrayList<>();
         list2.add(stationB.getObfuscated());
-        partial = stationA.localCalculationNthParty(list2, partial);
+        partial = partial.add(stationA.localCalculationNthParty(list2));
         BigInteger result = stationB.removeV2(partial);
 
         assertEquals(expectedresult, result);

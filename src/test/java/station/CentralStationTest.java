@@ -15,7 +15,7 @@ public class CentralStationTest {
 
     @Test
     public void testCalculateNPartyScalarProduct() {
-        for (int n = 2; n < 5; n++) {
+        for (int n = 2; n < 8; n++) {
             for (int population = 2; population < 10; population++) {
                 List<DataStation> datastations = new ArrayList<>();
                 List<BigInteger[][]> datasets = new ArrayList<>();
@@ -24,7 +24,7 @@ public class CentralStationTest {
                     datastations.add(new DataStation(String.valueOf(i), data));
                     datasets.add(data);
                 }
-                CentralStation central = new CentralStation(datastations);
+                CentralStation central = new CentralStation();
 
                 // calculate expected anwser:
                 BigInteger expected = matrixDiagonalMultiplication(datasets, datasets.get(0).length);
@@ -47,7 +47,7 @@ public class CentralStationTest {
             datastations.add(new DataStation(String.valueOf(i), data));
             datasets.add(data);
         }
-        CentralStation central = new CentralStation(datastations);
+        CentralStation central = new CentralStation();
 
         // calculate expected anwser:
         BigInteger expected = matrixDiagonalMultiplication(datasets, datasets.get(0).length);
@@ -63,7 +63,7 @@ public class CentralStationTest {
             for (int i = 0; i < population; i++) {
                 datastations.add(createStation(String.valueOf(i), population));
             }
-            CentralStation central = new CentralStation(datastations);
+            CentralStation central = new CentralStation();
             SecretStation secretStation = new SecretStation();
             secretStation.shareSecret(datastations);
 

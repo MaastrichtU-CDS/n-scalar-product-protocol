@@ -10,11 +10,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class CentralStation {
-    private List<DataStation> datastations;
-
-    public CentralStation(List<DataStation> datastations) {
-        this.datastations = datastations;
-    }
 
     public BigInteger calculateNPartyScalarProduct(List<DataStation> datastations) {
         // determine first datastation:
@@ -27,32 +22,26 @@ public class CentralStation {
         SecretStation active = new SecretStation();
 
         // share secret
+        // this bit would be a webservice call
         active.shareSecret(datastations);
 
         // calculate partial result first datastation
-        BigInteger partial = first.localCalculationFirstParty(others.stream().map(x -> x.getObfuscated()).collect(
-                Collectors.toList()));
+        // this bit would be a webservice call
+        BigInteger partial = first
+                .localCalculationFirstParty(others.stream().map(x -> x.getObfuscated()).collect(
+                        Collectors.toList()));
 
         // calculate partial result nth station
-
-        for (DataStation nth : others) {
-            List<DataStation> setMinusN = datastations.stream().filter(x -> x != nth).collect(Collectors.toList());
-            partial = nth.localCalculationNthParty(setMinusN.stream().map(x -> x.getObfuscated()).collect(
-                    Collectors.toList()), partial);
-        }
-
+        partial = partial.add(others.parallelStream().map(nth -> calculateNthParty(nth, datastations))
+                                      .reduce(BigInteger.ZERO, BigInteger::add));
 
         // determine subprotocols
         List<List<DataStation>> subprotocols = determineSubprotocols(datastations, active);
-        BigInteger temp = partial;
         // run subprotocols and add results
-        for (List<DataStation> subprotocol : subprotocols) {
-            // each subprotocol needs to be multiplied by the difference in size with the current protocol
-            // e.g.a 4-party protocol with A, B C & D will have 2 subprotocols of ABRcRd and 1 with ARbRcRd
-            // so factor this in
-            BigInteger nFactor = BigInteger.valueOf(datastations.size() - subprotocol.size());
-            partial = partial.add(calculateNPartyScalarProduct(subprotocol).multiply(nFactor));
-        }
+        partial = partial.add(subprotocols.parallelStream()
+                                      .map(subprotocol -> calculateSubprotocols(subprotocol, datastations.size()))
+                                      .reduce(BigInteger.ZERO, BigInteger::add));
+
         // remove V2 and return result
         return first.removeV2(partial);
     }
@@ -62,9 +51,12 @@ public class CentralStation {
         // determine Ra combinations:
         int n = datastations.size();
         List<List<DataStation>> subProtocols = new ArrayList<>();
+
         for (int k = 2; k <= n - 1; k++) {
             Combinations combinations = new Combinations(n, k);
+
             Iterator iterator = combinations.iterator();
+
             while (iterator.hasNext()) {
                 List<Integer> combo = Arrays.stream((int[]) iterator.next()).boxed()
                         .collect(Collectors.toList());
@@ -84,6 +76,22 @@ public class CentralStation {
             }
         }
         return subProtocols;
+    }
+
+    private BigInteger calculateNthParty(DataStation nth, List<DataStation> datastations) {
+        List<DataStation> setMinusN = datastations.stream().filter(x -> x != nth).collect(Collectors.toList());
+        //this bit would be a webservice call.
+        return nth.localCalculationNthParty(setMinusN.stream().map(x -> x.getObfuscated()).collect(
+                Collectors.toList()));
+    }
+
+    private BigInteger calculateSubprotocols(List<DataStation> subprotocol, int parentSize) {
+        // each subprotocol needs to be multiplied by the difference in size with the current protocol
+        // e.g.a 4-party protocol with A, B C & D will have 2 subprotocols of ABRcRd and 1 with ARbRcRd
+        // so factor this in
+        BigInteger nFactor = BigInteger.valueOf(parentSize - subprotocol.size());
+        // this bit would be a webservice call
+        return calculateNPartyScalarProduct(subprotocol).multiply(nFactor);
     }
 
 

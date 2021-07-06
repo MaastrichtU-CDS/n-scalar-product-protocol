@@ -54,13 +54,14 @@ public class DataStation extends Station {
     public BigInteger removeV2(BigInteger partial) {
         return partial.add(v2);
     }
-
-    public BigInteger localCalculationNthParty(List<BigInteger[][]> obfuscated, BigInteger partial) {
+    
+    public BigInteger localCalculationNthParty(List<BigInteger[][]> obfuscated) {
         List<BigInteger[][]> fullList = new ArrayList<>(obfuscated);
         fullList.add(secret.getMatrix());
-        return partial.subtract(matrixDiagonalMultiplication(fullList, population))
+        return BigInteger.ZERO.subtract(matrixDiagonalMultiplication(fullList, population))
                 .add(BigInteger.valueOf(obfuscated.size()).multiply(secret.getR()));
     }
+
 
     public String getId() {
         return id;
