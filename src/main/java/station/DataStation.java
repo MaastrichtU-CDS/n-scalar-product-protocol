@@ -17,7 +17,7 @@ public class DataStation extends Station {
     private BigInteger[][] obfuscated;
     private BigInteger v2;
 
-    private static final int MAX = 0;
+    private static final int MAX = 10;
 
 
     public DataStation(String id, BigInteger[][] localData) {
@@ -46,7 +46,7 @@ public class DataStation extends Station {
         fullList.add(localData);
         Random random = new Random();
 
-        this.v2 = BigInteger.ZERO;//BigInteger.valueOf(random.nextInt(MAX));
+        this.v2 = BigInteger.valueOf(random.nextInt(MAX));
         return BigInteger.valueOf(obfuscated.size()).multiply(secret.getR())
                 .add(matrixDiagonalMultiplication(fullList, population)).subtract(v2);
     }
@@ -54,7 +54,7 @@ public class DataStation extends Station {
     public BigInteger removeV2(BigInteger partial) {
         return partial.add(v2);
     }
-    
+
     public BigInteger localCalculationNthParty(List<BigInteger[][]> obfuscated) {
         List<BigInteger[][]> fullList = new ArrayList<>(obfuscated);
         fullList.add(secret.getMatrix());

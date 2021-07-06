@@ -19,6 +19,7 @@ public class CentralStation {
         List<DataStation> others = datastations.stream().filter(x -> x != first).collect(Collectors.toList());
 
         // determine the active secretStation
+        // these should probably be pre-made instead of just making a new one here
         SecretStation active = new SecretStation();
 
         // share secret
