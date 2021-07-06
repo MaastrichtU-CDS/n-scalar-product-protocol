@@ -12,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static util.Util.matrixDiagonalMultiplication;
 
 public class SecretTest {
-
+    
     @Test
     public void testGenerateSecret() {
         List<DataStation> parties = new ArrayList<>();

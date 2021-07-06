@@ -11,7 +11,7 @@ import static util.Util.matrixDiagonalMultiplication;
 
 public class Secret {
     private SecretPart[] parts;
-    private static final int MAX = 10;
+    private static final int MAX = 512;
 
     public Secret(SecretPart[] parts) {
         this.parts = parts;
@@ -29,6 +29,7 @@ public class Secret {
         for (DataStation party : parties) {
             BigInteger[][] matrix = new BigInteger[length][length];
             matrices.add(matrix);
+
             for (int i = 0; i < length; i++) {
                 for (int j = 0; j < length; j++) {
                     if (i == j) {
@@ -45,8 +46,18 @@ public class Secret {
         BigInteger remainder = sum;
         BigInteger max = sum.divide(BigInteger.valueOf(size));
         for (int i = 0; i < size - 1; i++) {
-            BigInteger value = BigInteger.valueOf(
-                    random.nextInt(max.intValue()) + 1);
+            BigInteger value = BigInteger.ONE;
+            if (max.compareTo(BigInteger.valueOf(Integer.MAX_VALUE)) > 0) {
+                value = BigInteger.valueOf(
+                        random.nextInt(Integer.MAX_VALUE) + 1);
+            } else {
+                try {
+                    value = BigInteger.valueOf(
+                            random.nextInt(max.intValue()) + 1);
+                } catch (Exception e) {
+                    System.out.println(e);
+                }
+            }
             rs.add(value);
             remainder = remainder.subtract(value);
         }
