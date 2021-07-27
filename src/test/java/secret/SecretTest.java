@@ -12,13 +12,13 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static util.Util.matrixDiagonalMultiplication;
 
 public class SecretTest {
-    
+
     @Test
     public void testGenerateSecret() {
         List<DataStation> parties = new ArrayList<>();
         int length = 10;
-        for (int i = 0; i < 10; i++) {
-            parties.add(new DataStation(String.valueOf(i), new BigInteger[10][10]));
+        for (int i = 0; i < length; i++) {
+            parties.add(new DataStation(String.valueOf(i), new BigInteger[length][length]));
         }
         Secret secret = Secret.generateSecret(parties);
 

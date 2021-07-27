@@ -1,2 +1,5 @@
 /.idea
 /target
+/python/.idea
+/python/venv
+**/__pycache__
