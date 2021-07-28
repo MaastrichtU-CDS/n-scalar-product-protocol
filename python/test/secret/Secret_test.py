@@ -28,7 +28,7 @@ class SecretTest(unittest.TestCase):
             matrices.append(part.getMatrix());
 
 
-        #Due to machine precision this sometimes fails.
+        #Due to machine precision? this sometimes fails.
         #This is despites Pythons claim it can work with giant numbers.
         #Same code works fine with BigInteger in java
         self.assertEquals(sum, matrixDiagonalMultiplication(matrices));
