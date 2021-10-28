@@ -18,9 +18,9 @@ public class CentralStationTest {
         for (int n = 2; n < 8; n++) {
             for (int population = 2; population < 10; population++) {
                 List<DataStation> datastations = new ArrayList<>();
-                List<BigInteger[][]> datasets = new ArrayList<>();
+                List<BigInteger[]> datasets = new ArrayList<>();
                 for (int i = 0; i < n; i++) {
-                    BigInteger[][] data = createData(population);
+                    BigInteger[] data = createData(population);
                     datastations.add(new DataStation(String.valueOf(i), data));
                     datasets.add(data);
                 }
@@ -41,9 +41,9 @@ public class CentralStationTest {
         final int N = 3;
 
         List<DataStation> datastations = new ArrayList<>();
-        List<BigInteger[][]> datasets = new ArrayList<>();
+        List<BigInteger[]> datasets = new ArrayList<>();
         for (int i = 0; i < N; i++) {
-            BigInteger[][] data = createData(POPUlATION);
+            BigInteger[] data = createData(POPUlATION);
             datastations.add(new DataStation(String.valueOf(i), data));
             datasets.add(data);
         }

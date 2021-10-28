@@ -22,25 +22,19 @@ public class Secret {
     }
 
     public static Secret generateSecret(List<DataStation> parties) {
-        List<BigInteger[][]> matrices = new ArrayList<>();
+        List<BigInteger[]> diagonals = new ArrayList<>();
         int length = parties.get(0).getPopulation();
         int size = parties.size();
         Random random = new Random();
         for (DataStation party : parties) {
-            BigInteger[][] matrix = new BigInteger[length][length];
-            matrices.add(matrix);
+            BigInteger[] diagonal = new BigInteger[length];
+            diagonals.add(diagonal);
 
             for (int i = 0; i < length; i++) {
-                for (int j = 0; j < length; j++) {
-                    if (i == j) {
-                        matrix[i][i] = BigInteger.valueOf(random.nextInt(MAX) + 1);
-                    } else {
-                        matrix[i][j] = BigInteger.ZERO;
-                    }
-                }
+                diagonal[i] = BigInteger.valueOf(random.nextInt(MAX) + 1);
             }
         }
-        BigInteger sum = matrixDiagonalMultiplication(matrices, length);
+        BigInteger sum = matrixDiagonalMultiplication(diagonals, length);
 
         List<BigInteger> rs = new ArrayList<>();
         BigInteger remainder = sum;
@@ -64,7 +58,7 @@ public class Secret {
         rs.add(remainder);
         SecretPart[] parts = new SecretPart[size];
         for (int i = 0; i < size; i++) {
-            parts[i] = new SecretPart(matrices.get(i), rs.get(i), parties.get(i).getId());
+            parts[i] = new SecretPart(diagonals.get(i), rs.get(i), parties.get(i).getId());
         }
         return new Secret(parts);
     }

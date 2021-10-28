@@ -3,12 +3,12 @@ package secret;
 import java.math.BigInteger;
 
 public class SecretPart {
-    private BigInteger[][] matrix;
+    private BigInteger[] diagonal;
     private BigInteger r;
     private String id;
 
-    public SecretPart(BigInteger[][] matrix, BigInteger r, String id) {
-        this.matrix = matrix;
+    public SecretPart(BigInteger[] diagonal, BigInteger r, String id) {
+        this.diagonal = diagonal;
         this.r = r;
         this.id = id;
     }
@@ -17,8 +17,8 @@ public class SecretPart {
         return id;
     }
 
-    public BigInteger[][] getMatrix() {
-        return matrix;
+    public BigInteger[] getDiagonal() {
+        return diagonal;
     }
 
     public BigInteger getR() {

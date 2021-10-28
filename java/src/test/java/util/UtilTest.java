@@ -17,18 +17,18 @@ public class UtilTest {
         // max value calculated is in surplus of 100 ^ 100
         // Diagonal of the matrices is filled according to the size of the matrix. so X[0][0] = 0, X[1][1] = 1 etc.
         for (int size = 1; size < 100; size++) {
-            List<BigInteger[][]> matrices = new ArrayList<>();
+            List<BigInteger[]> diagonals = new ArrayList<>();
             for (int parties = 0; parties < 100; parties++) {
-                matrices.add(new BigInteger[size][size]);
+                diagonals.add(new BigInteger[size]);
             }
             BigInteger anwser = BigInteger.ZERO;
             for (int i = 0; i < size; i++) {
-                for (BigInteger[][] matrix : matrices) {
-                    matrix[i][i] = BigInteger.valueOf(i);
+                for (BigInteger[] diagonal : diagonals) {
+                    diagonal[i] = BigInteger.valueOf(i);
                 }
-                anwser = anwser.add(BigInteger.valueOf(i).pow(matrices.size()));
+                anwser = anwser.add(BigInteger.valueOf(i).pow(diagonals.size()));
             }
-            assertEquals(anwser, matrixDiagonalMultiplication(matrices, size));
+            assertEquals(anwser, matrixDiagonalMultiplication(diagonals, size));
         }
     }
 

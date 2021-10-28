@@ -25,11 +25,11 @@ public class SecretStation extends Station {
     }
 
     public DataStation generateDataStation(List<String> subset) {
-        List<BigInteger[][]> list = new ArrayList<>();
+        List<BigInteger[]> list = new ArrayList<>();
         for (String id : subset) {
             for (SecretPart part : secret.getParts()) {
                 if (part.getId().equals(id)) {
-                    list.add(part.getMatrix());
+                    list.add(part.getDiagonal());
                 }
             }
         }

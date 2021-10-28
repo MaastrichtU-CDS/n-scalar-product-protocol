@@ -19,10 +19,10 @@ public class DataStationTest {
 
     @Test
     public void test2PartyCalculation() {
-        BigInteger[][] A_data = createData(POPUlATION);
+        BigInteger[] A_data = createData(POPUlATION);
         DataStation stationA = new DataStation("1", A_data);
 
-        BigInteger[][] B_data = createData(POPUlATION);
+        BigInteger[] B_data = createData(POPUlATION);
         DataStation stationB = new DataStation("2", B_data);
 
         Secret secret = generateSecret(Arrays.asList(stationA, stationB));
@@ -32,9 +32,9 @@ public class DataStationTest {
 
         BigInteger ra = secret.getParts()[0].getR();
         BigInteger rb = secret.getParts()[1].getR();
-        BigInteger[][] B_hat = stationB.getObfuscated();
-        BigInteger[][] A_hat = stationA.getObfuscated();
-        BigInteger[][] Ra = secret.getParts()[0].getMatrix();
+        BigInteger[] B_hat = stationB.getObfuscated();
+        BigInteger[] A_hat = stationA.getObfuscated();
+        BigInteger[] Ra = secret.getParts()[0].getDiagonal();
 
         // manually run the calculation: A_hat * B + rb - B_hat * Ra + ra to determine expected result
         BigInteger expectedresult =
@@ -42,10 +42,10 @@ public class DataStationTest {
                         .subtract(matrixDiagonalMultiplication(Arrays.asList(B_hat, Ra), POPUlATION)).add(ra);
 
         // run 2-party calculation
-        List<BigInteger[][]> list = new ArrayList<>();
+        List<BigInteger[]> list = new ArrayList<>();
         list.add(stationA.getObfuscated());
         BigInteger partial = stationB.localCalculationFirstParty(list);
-        List<BigInteger[][]> list2 = new ArrayList<>();
+        List<BigInteger[]> list2 = new ArrayList<>();
         list2.add(stationB.getObfuscated());
         partial = partial.add(stationA.localCalculationNthParty(list2));
         BigInteger result = stationB.removeV2(partial);
@@ -55,16 +55,16 @@ public class DataStationTest {
 
     @Test
     public void testGetObfuscated() {
-        BigInteger[][] data = createData(POPUlATION);
+        BigInteger[] data = createData(POPUlATION);
 
         DataStation station = new DataStation("1", data);
         SecretPart secret = generateSecret(Arrays.asList(station)).getParts()[0];
 
         station.setLocalSecret(secret);
 
-        BigInteger[][] obfuscated = station.getObfuscated();
+        BigInteger[] obfuscated = station.getObfuscated();
         for (int i = 0; i < POPUlATION; i++) {
-            assertEquals(data[i][i].add(secret.getMatrix()[i][i]), obfuscated[i][i]);
+            assertEquals(data[i].add(secret.getDiagonal()[i]), obfuscated[i]);
         }
 
     }
@@ -73,15 +73,13 @@ public class DataStationTest {
         return new DataStation(id, createData(population));
     }
 
-    public static BigInteger[][] createData(int population) {
-        BigInteger[][] data = new BigInteger[population][population];
+    public static BigInteger[] createData(int population) {
+        BigInteger[] data = new BigInteger[population];
 
-        BigInteger[][] secretMatrix = new BigInteger[population][population];
+        BigInteger[] secretDiagonal = new BigInteger[population];
         Random random = new Random();
         for (int i = 0; i < population; i++) {
-            for (int j = 0; j < population; j++) {
-                data[i][j] = BigInteger.valueOf(random.nextInt(2));
-            }
+            data[i] = BigInteger.valueOf(random.nextInt(2));
         }
         return data;
     }

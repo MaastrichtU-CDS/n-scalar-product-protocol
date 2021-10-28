@@ -14,17 +14,17 @@ public class PerformanceTest {
 
     @Test
     public void testPerformanceInN() {
-        //int population = 500;
-        int iterations = 100;
-        int n = 3;
-        //for (int n = 2; n < 8; n++) {
-        for (int population = 7000; population < 10500; population += 500) {
+        int population = 500;
+        int iterations = 1;
+        //int n = 3;
+        for (int n = 2; n < 20; n++) {
+            //for (int population = 7000; population < 10500; population += 500) {
             ArrayList<Result> results = new ArrayList<>();
             for (int i = 0; i < iterations; i++) {
                 List<DataStation> datastations = new ArrayList<>();
-                List<BigInteger[][]> datasets = new ArrayList<>();
+                List<BigInteger[]> datasets = new ArrayList<>();
                 for (int j = 0; j < n; j++) {
-                    BigInteger[][] data = createData(population);
+                    BigInteger[] data = createData(population);
                     datastations.add(new DataStation(String.valueOf(j), data));
                     datasets.add(data);
                 }

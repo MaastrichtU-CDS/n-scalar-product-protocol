@@ -18,18 +18,18 @@ public class SecretTest {
         List<DataStation> parties = new ArrayList<>();
         int length = 10;
         for (int i = 0; i < length; i++) {
-            parties.add(new DataStation(String.valueOf(i), new BigInteger[length][length]));
+            parties.add(new DataStation(String.valueOf(i), new BigInteger[length]));
         }
         Secret secret = Secret.generateSecret(parties);
 
         BigInteger sum = BigInteger.ZERO;
-        List<BigInteger[][]> matrices = new ArrayList<>();
+        List<BigInteger[]> diagonals = new ArrayList<>();
         for (SecretPart part : secret.getParts()) {
             assertNotEquals(part.getR(), BigInteger.ZERO);
             sum = sum.add(part.getR());
-            matrices.add(part.getMatrix());
+            diagonals.add(part.getDiagonal());
         }
-        assertEquals(sum, matrixDiagonalMultiplication(matrices, length));
+        assertEquals(sum, matrixDiagonalMultiplication(diagonals, length));
 
     }
 }
