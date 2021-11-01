@@ -1,6 +1,8 @@
 package station;
 
 import org.apache.commons.math3.util.Combinations;
+import webservice.Protocol;
+import webservice.Server;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -11,47 +13,48 @@ import java.util.stream.Collectors;
 
 public class CentralStation {
 
-    public BigInteger calculateNPartyScalarProduct(List<DataStation> datastations) {
+    public BigInteger calculateNPartyScalarProduct(Protocol prot) {
+
+        List<Server> servers = prot.getServers();
+        Server secretServer = prot.getSecretServer();
+        String id = prot.getId();
         // determine first datastation:
-        DataStation first = datastations.get(0);
+        Server first = servers.get(0);
 
         // create list of other datastations
-        List<DataStation> others = datastations.stream().filter(x -> x != first).collect(Collectors.toList());
+        List<Server> others = servers.stream().filter(x -> x != first).collect(Collectors.toList());
 
-        // determine the active secretStation
-        // these should probably be pre-made instead of just making a new one here
-        SecretStation active = new SecretStation();
-
-        // share secret
-        // this bit would be a webservice call
-        active.shareSecret(datastations);
+        // retrieve secret
+        for (Server s : servers) {
+            s.retrieveSecret(id, secretServer);
+        }
 
         // calculate partial result first datastation
         // this bit would be a webservice call
         BigInteger partial = first
-                .localCalculationFirstParty(others.stream().map(x -> x.getObfuscated()).collect(
+                .localCalculationFirstParty(id, others.stream().map(x -> x.getObfuscated(id)).collect(
                         Collectors.toList()));
 
         // calculate partial result nth station
-        partial = partial.add(others.parallelStream().map(nth -> calculateNthParty(nth, datastations))
+        partial = partial.add(others.stream().map(nth -> calculateNthParty(id, nth, servers))
                                       .reduce(BigInteger.ZERO, BigInteger::add));
 
         // determine subprotocols
-        List<List<DataStation>> subprotocols = determineSubprotocols(datastations, active);
+        List<Protocol> subprotocols = determineSubprotocols(servers, secretServer, id);
         // run subprotocols and add results
-        partial = partial.add(subprotocols.parallelStream()
-                                      .map(subprotocol -> calculateSubprotocols(subprotocol, datastations.size()))
+        partial = partial.add(subprotocols.stream()
+                                      .map(subprotocol -> calculateSubprotocols(subprotocol, servers.size()))
                                       .reduce(BigInteger.ZERO, BigInteger::add));
 
         // remove V2 and return result
-        return first.removeV2(partial);
+        return first.removeV2(id, partial);
     }
 
-    public List<List<DataStation>> determineSubprotocols(List<DataStation> datastations, SecretStation
-            secretStation) {
+    public List<Protocol> determineSubprotocols(List<Server> servers, Server
+            secretServer, String source) {
         // determine Ra combinations:
-        int n = datastations.size();
-        List<List<DataStation>> subProtocols = new ArrayList<>();
+        int n = servers.size();
+        List<Protocol> subProtocols = new ArrayList<>();
 
         for (int k = 2; k <= n - 1; k++) {
             Combinations combinations = new Combinations(n, k);
@@ -61,39 +64,63 @@ public class CentralStation {
             while (iterator.hasNext()) {
                 List<Integer> combo = Arrays.stream((int[]) iterator.next()).boxed()
                         .collect(Collectors.toList());
-                List<DataStation> subprotocol = new ArrayList<>();
+                List<Server> subprotocol = new ArrayList<>();
+
+
                 // collect datastations not in this collection:
-                for (int i = 0; i < datastations.size(); i++) {
+                List<String> serverIds = new ArrayList<>();
+                for (int i = 0; i < servers.size(); i++) {
                     if (!combo.contains(i)) {
-                        subprotocol.add(new DataStation(datastations.get(i)));
+                        subprotocol.add(servers.get(i));
+                        serverIds.add(servers.get(i).getServerId());
                     }
                 }
+                serverIds.add(secretServer.getServerId());
+                //new ID = source ID + the ID's of the selected servers.
+                //Source ID ensures a unique path.
+                String newId = source + serverIds.stream().map(e -> e.toString()).reduce("", String::concat);
+
                 List<String> ids = new ArrayList<>();
                 for (int i : combo) {
-                    ids.add(datastations.get(i).getId());
+                    ids.add(servers.get(i).getServerId());
                 }
-                subprotocol.add(secretStation.generateDataStation(ids));
-                subProtocols.add(subprotocol);
+
+                //Determine new Secret Server
+                //Just pick the first one out of the servers not providing a Data here.
+                String selectedIds = ids.get(0);
+                Server selected = null;
+                for (Server s : servers) {
+                    if (s.getServerId().equals(selectedIds)) {
+                        selected = s;
+                    }
+                }
+                selected.addSecretStation(newId, serverIds, servers.get(0).getPopulation());
+
+                for (Server s : subprotocol) {
+                    s.addDatastation(newId, source);
+                }
+                secretServer.addDataFromSecret(newId, source, ids);
+                subprotocol.add(secretServer);
+                subProtocols.add(new Protocol(subprotocol, selected, newId));
             }
         }
         return subProtocols;
     }
 
-    private BigInteger calculateNthParty(DataStation nth, List<DataStation> datastations) {
-        List<DataStation> setMinusN = datastations.stream().filter(x -> x != nth).collect(Collectors.toList());
+    private BigInteger calculateNthParty(String id, Server nth, List<Server> servers) {
+        List<Server> setMinusN = servers.stream().filter(x -> x != nth).collect(Collectors.toList());
         //this bit would be a webservice call.
-        return nth.localCalculationNthParty(setMinusN.stream().map(x -> x.getObfuscated()).collect(
+        return nth.localCalculationNthParty(id, setMinusN.stream().map(x -> x.getObfuscated(id)).collect(
                 Collectors.toList()));
     }
 
-    private BigInteger calculateSubprotocols(List<DataStation> subprotocol, int parentSize) {
+    private BigInteger calculateSubprotocols(Protocol subprotocol, int parentSize) {
         // each subprotocol needs to be multiplied by the difference in size with the current protocol
         // e.g.a 4-party protocol with A, B C & D will have 2 subprotocols of ABRcRd and 1 with ARbRcRd
         // so factor this in
-        BigInteger nFactor = BigInteger.valueOf(parentSize - subprotocol.size());
+        BigInteger nFactor = BigInteger.valueOf(parentSize - subprotocol.getServers().size());
         // this bit would be a webservice call
         return calculateNPartyScalarProduct(subprotocol).multiply(nFactor);
     }
-
 
 }
