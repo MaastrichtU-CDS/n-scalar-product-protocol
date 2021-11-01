@@ -32,16 +32,20 @@ public class CentralStation {
         // calculate partial result first datastation
         // this bit would be a webservice call
         BigInteger partial = first
-                .localCalculationFirstParty(id, others.stream().map(x -> x.getObfuscated(id)).collect(
+                .localCalculationFirstParty(id, others.parallelStream().map(x -> x.getObfuscated(id)).collect(
                         Collectors.toList()));
 
         // calculate partial result nth station
-        partial = partial.add(others.stream().map(nth -> calculateNthParty(id, nth, servers))
+        partial = partial.add(others.parallelStream().map(nth -> calculateNthParty(id, nth, servers))
                                       .reduce(BigInteger.ZERO, BigInteger::add));
 
         // determine subprotocols
         List<Protocol> subprotocols = determineSubprotocols(servers, secretServer, id);
-        // run subprotocols and add results
+        /*
+         run subprotocols and add results
+         It should be possible to parallelize this, butwith the server setup java gets confused and starts throwing
+         random nullpointers
+        */
         partial = partial.add(subprotocols.stream()
                                       .map(subprotocol -> calculateSubprotocols(subprotocol, servers.size()))
                                       .reduce(BigInteger.ZERO, BigInteger::add));
