@@ -1,13 +1,14 @@
-package station;
+package com.station;
 
-import secret.SecretPart;
+
+import com.secret.SecretPart;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import static util.Util.matrixDiagonalMultiplication;
+import static com.util.Util.matrixDiagonalMultiplication;
 
 public class DataStation extends Station {
     private SecretPart secret;

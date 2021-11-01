@@ -1,23 +1,23 @@
-package webservice;
+package com.webservice;
 
 import java.util.List;
 
 public class Protocol {
-    private List<Server> servers;
-    private Server secretServer;
+    private List<ServerEndpoint> servers;
+    private ServerEndpoint secretServer;
     private String id;
 
-    public Protocol(List<Server> servers, Server secretServer, String id) {
+    public Protocol(List<ServerEndpoint> servers, ServerEndpoint secretServer, String id) {
         this.servers = servers;
         this.secretServer = secretServer;
         this.id = id;
     }
 
-    public List<Server> getServers() {
+    public List<ServerEndpoint> getServers() {
         return servers;
     }
 
-    public Server getSecretServer() {
+    public ServerEndpoint getSecretServer() {
         return secretServer;
     }
 

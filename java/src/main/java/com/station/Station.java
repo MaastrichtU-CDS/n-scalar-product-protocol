@@ -1,4 +1,4 @@
-package station;
+package com.station;
 
 public class Station {
 }

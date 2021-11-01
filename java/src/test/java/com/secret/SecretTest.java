@@ -1,15 +1,15 @@
-package secret;
+package com.secret;
 
+import com.station.DataStation;
 import org.junit.jupiter.api.Test;
-import station.DataStation;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.util.Util.matrixDiagonalMultiplication;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static util.Util.matrixDiagonalMultiplication;
 
 public class SecretTest {
 

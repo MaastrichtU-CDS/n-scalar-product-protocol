@@ -1,13 +1,13 @@
-package secret;
+package com.secret;
 
-import station.DataStation;
+import com.station.DataStation;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import static util.Util.matrixDiagonalMultiplication;
+import static com.util.Util.matrixDiagonalMultiplication;
 
 public class Secret {
     private SecretPart[] parts;

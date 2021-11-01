@@ -1,8 +1,8 @@
-package station;
+package com.station;
 
+import com.secret.Secret;
+import com.secret.SecretPart;
 import org.junit.jupiter.api.Test;
-import secret.Secret;
-import secret.SecretPart;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -10,9 +10,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
+import static com.secret.Secret.generateSecret;
+import static com.util.Util.matrixDiagonalMultiplication;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static secret.Secret.generateSecret;
-import static util.Util.matrixDiagonalMultiplication;
 
 public class DataStationTest {
     private final int POPUlATION = 10;

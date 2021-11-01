@@ -1,8 +1,8 @@
-package station;
+package com.station;
 
+import com.webservice.Protocol;
+import com.webservice.ServerEndpoint;
 import org.apache.commons.math3.util.Combinations;
-import webservice.Protocol;
-import webservice.Server;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -15,18 +15,18 @@ public class CentralStation {
 
     public BigInteger calculateNPartyScalarProduct(Protocol prot) {
 
-        List<Server> servers = prot.getServers();
-        Server secretServer = prot.getSecretServer();
+        List<ServerEndpoint> servers = prot.getServers();
+        ServerEndpoint secretServer = prot.getSecretServer();
         String id = prot.getId();
         // determine first datastation:
-        Server first = servers.get(0);
+        ServerEndpoint first = servers.get(0);
 
         // create list of other datastations
-        List<Server> others = servers.stream().filter(x -> x != first).collect(Collectors.toList());
+        List<ServerEndpoint> others = servers.stream().filter(x -> x != first).collect(Collectors.toList());
 
         // retrieve secret
-        for (Server s : servers) {
-            s.retrieveSecret(id, secretServer);
+        for (ServerEndpoint s : servers) {
+            s.retrieveSecret(id, secretServer.getServerId());
         }
 
         // calculate partial result first datastation
@@ -54,7 +54,7 @@ public class CentralStation {
         return first.removeV2(id, partial);
     }
 
-    public List<Protocol> determineSubprotocols(List<Server> servers, Server
+    public List<Protocol> determineSubprotocols(List<ServerEndpoint> servers, ServerEndpoint
             secretServer, String source) {
         // determine Ra combinations:
         int n = servers.size();
@@ -68,7 +68,7 @@ public class CentralStation {
             while (iterator.hasNext()) {
                 List<Integer> combo = Arrays.stream((int[]) iterator.next()).boxed()
                         .collect(Collectors.toList());
-                List<Server> subprotocol = new ArrayList<>();
+                List<ServerEndpoint> subprotocol = new ArrayList<>();
 
 
                 // collect datastations not in this collection:
@@ -92,15 +92,15 @@ public class CentralStation {
                 //Determine new Secret Server
                 //Just pick the first one out of the servers not providing a Data here.
                 String selectedIds = ids.get(0);
-                Server selected = null;
-                for (Server s : servers) {
+                ServerEndpoint selected = null;
+                for (ServerEndpoint s : servers) {
                     if (s.getServerId().equals(selectedIds)) {
                         selected = s;
                     }
                 }
                 selected.addSecretStation(newId, serverIds, servers.get(0).getPopulation());
 
-                for (Server s : subprotocol) {
+                for (ServerEndpoint s : subprotocol) {
                     s.addDatastation(newId, source);
                 }
                 secretServer.addDataFromSecret(newId, source, ids);
@@ -111,8 +111,8 @@ public class CentralStation {
         return subProtocols;
     }
 
-    private BigInteger calculateNthParty(String id, Server nth, List<Server> servers) {
-        List<Server> setMinusN = servers.stream().filter(x -> x != nth).collect(Collectors.toList());
+    private BigInteger calculateNthParty(String id, ServerEndpoint nth, List<ServerEndpoint> servers) {
+        List<ServerEndpoint> setMinusN = servers.stream().filter(x -> x != nth).collect(Collectors.toList());
         //this bit would be a webservice call.
         return nth.localCalculationNthParty(id, setMinusN.stream().map(x -> x.getObfuscated(id)).collect(
                 Collectors.toList()));

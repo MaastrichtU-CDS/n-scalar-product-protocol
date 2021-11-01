@@ -1,13 +1,11 @@
-package util;
+package com.util;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static util.Util.matrixDiagonalMultiplication;
 
 public class UtilTest {
 
@@ -28,7 +26,7 @@ public class UtilTest {
                 }
                 anwser = anwser.add(BigInteger.valueOf(i).pow(diagonals.size()));
             }
-            assertEquals(anwser, matrixDiagonalMultiplication(diagonals, size));
+            Assertions.assertEquals(anwser, Util.matrixDiagonalMultiplication(diagonals, size));
         }
     }
 

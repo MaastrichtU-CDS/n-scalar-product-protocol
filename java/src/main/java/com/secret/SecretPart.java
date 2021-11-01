@@ -1,4 +1,4 @@
-package secret;
+package com.secret;
 
 import java.math.BigInteger;
 

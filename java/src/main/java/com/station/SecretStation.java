@@ -1,14 +1,15 @@
-package station;
+package com.station;
 
-import secret.Secret;
-import secret.SecretPart;
+
+import com.secret.Secret;
+import com.secret.SecretPart;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
-import static secret.Secret.generateSecret;
-import static util.Util.matrixMultiplication;
+import static com.secret.Secret.generateSecret;
+import static com.util.Util.matrixMultiplication;
 
 public class SecretStation extends Station {
     private Secret secret;
