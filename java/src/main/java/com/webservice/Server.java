@@ -23,6 +23,7 @@ public class Server {
     private String serverId;
     private BigInteger[] localData;
     private int population;
+    private final int magicnumber = 3; //purely here to deal with checkstyle for the moment
 
     private List<ServerEndpoint> endpoints = new ArrayList<>();
 
@@ -33,10 +34,14 @@ public class Server {
         this.endpoints = endpoints;
     }
 
-    @PutMapping ("InitData")
-    public void InitData() {
+    public Server(List<String> servers) {
+        this.servers = servers;
+    }
+
+    @PutMapping ("initData")
+    public void initData() {
         reset();
-        localData = new BigInteger[3];
+        localData = new BigInteger[magicnumber];
         localData[0] = BigInteger.ZERO;
         localData[1] = BigInteger.ZERO;
         localData[2] = BigInteger.ONE;
@@ -44,7 +49,7 @@ public class Server {
             endpoints.add(new ServerEndpoint(s));
         }
         dataStations.put("start", new DataStation(serverId, localData));
-        this.population = 3;
+        this.population = magicnumber;
     }
 
     public void reset() {
@@ -53,24 +58,24 @@ public class Server {
         localData = null;
     }
 
-    @PutMapping ("Random")
-    public void InitRandom() {
+    @PutMapping ("initRandom")
+    public void initRandom() {
         reset();
         for (String s : servers) {
             endpoints.add(new ServerEndpoint(s));
         }
         secretStations.put("start", new SecretStation(endpoints.stream().map(s -> s.getServerId()).collect(
-                Collectors.toList()), 3));
-        this.population = 3;
+                Collectors.toList()), magicnumber));
+        this.population = magicnumber;
     }
 
     @GetMapping ("nparty")
     public BigInteger nparty() {
-        RestTemplate REST_TEMPLATE = new RestTemplate();
-        REST_TEMPLATE.put("http://localhost:8080/Random", "");
-        REST_TEMPLATE.put("http://localhost:8081/InitData", "");
-        REST_TEMPLATE.put("http://localhost:8082/InitData", "");
-        REST_TEMPLATE.put("http://localhost:8083/InitData", "");
+        RestTemplate restTemplate = new RestTemplate();
+        restTemplate.put("http://localhost:8080/initRandom", "");
+        restTemplate.put("http://localhost:8081/initData", "");
+        restTemplate.put("http://localhost:8082/initData", "");
+        restTemplate.put("http://localhost:8083/initData", "");
 
         CentralStation station = new CentralStation();
         List<ServerEndpoint> servers = new ArrayList<>();

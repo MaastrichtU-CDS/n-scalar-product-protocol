@@ -8,22 +8,22 @@ import java.math.BigInteger;
 import java.util.List;
 
 public class ServerEndpoint {
-    private final RestTemplate REST_TEMPLATE = new RestTemplate();
-    private final String SERVERRURL;
-    private final Server SERVER;
-    private final boolean TESTING;
+    private static final RestTemplate REST_TEMPLATE = new RestTemplate();
+    private final String serverUrl;
+    private final Server server;
+    private final boolean testing;
     //ToDo figure out how to  automatically remove the if-statements that use this flag in production code
 
     public ServerEndpoint(Server server) {
-        this.SERVER = server;
-        this.SERVERRURL = "";
-        this.TESTING = true;
+        this.server = server;
+        this.serverUrl = "";
+        this.testing = true;
     }
 
     public ServerEndpoint(String url) {
-        this.SERVERRURL = url;
-        this.SERVER = null;
-        this.TESTING = false;
+        this.serverUrl = url;
+        this.server = null;
+        this.testing = false;
     }
 
     //For sharing local secret externally
@@ -31,10 +31,10 @@ public class ServerEndpoint {
         GetSecretPartRequest req = new GetSecretPartRequest();
         req.setId(id);
         req.setServerId(serverId);
-        if (TESTING) {
-            return SERVER.getSecretPart(req).getSecretPart();
+        if (testing) {
+            return server.getSecretPart(req).getSecretPart();
         }
-        return REST_TEMPLATE.postForObject(SERVERRURL + "/getSecretPart", req, SecretPartResponse.class)
+        return REST_TEMPLATE.postForObject(serverUrl + "/getSecretPart", req, SecretPartResponse.class)
                 .getSecretPart();
     }
 
@@ -43,10 +43,10 @@ public class ServerEndpoint {
         RetrieveSecretRequest req = new RetrieveSecretRequest();
         req.setId(id);
         req.setSource(source);
-        if (TESTING) {
-            SERVER.retrieveSecret(req);
+        if (testing) {
+            server.retrieveSecret(req);
         } else {
-            REST_TEMPLATE.put(SERVERRURL + "/retrieveSecret", req);
+            REST_TEMPLATE.put(serverUrl + "/retrieveSecret", req);
         }
     }
 
@@ -55,10 +55,10 @@ public class ServerEndpoint {
         req.setId(id);
         req.setServerIds(serverIds);
         req.setLength(length);
-        if (TESTING) {
-            SERVER.addSecretStation(req);
+        if (testing) {
+            server.addSecretStation(req);
         } else {
-            REST_TEMPLATE.put(SERVERRURL + "/addSecretStation", req);
+            REST_TEMPLATE.put(serverUrl + "/addSecretStation", req);
         }
     }
 
@@ -66,10 +66,10 @@ public class ServerEndpoint {
         AddDataStationRequest req = new AddDataStationRequest();
         req.setId(id);
         req.setSource(source);
-        if (TESTING) {
-            SERVER.addDatastation(req);
+        if (testing) {
+            server.addDatastation(req);
         } else {
-            REST_TEMPLATE.put(SERVERRURL + "/addDatastation", req);
+            REST_TEMPLATE.put(serverUrl + "/addDatastation", req);
         }
     }
 
@@ -79,10 +79,10 @@ public class ServerEndpoint {
         req.setId(id);
         req.setSubset(subset);
         req.setSource(source);
-        if (TESTING) {
-            SERVER.addDataFromSecret(req);
+        if (testing) {
+            server.addDataFromSecret(req);
         } else {
-            REST_TEMPLATE.put(SERVERRURL + "/addDataFromSecret", req);
+            REST_TEMPLATE.put(serverUrl + "/addDataFromSecret", req);
         }
     }
 
@@ -90,53 +90,53 @@ public class ServerEndpoint {
         LocalCalculationPartyRequest req = new LocalCalculationPartyRequest();
         req.setId(id);
         req.setObfuscated(obfuscated);
-        if (TESTING) {
-            return SERVER.localCalculationFirstParty(req);
+        if (testing) {
+            return server.localCalculationFirstParty(req);
         }
-        return REST_TEMPLATE.postForObject(SERVERRURL + "/localCalculationFirstParty", req, BigInteger.class);
+        return REST_TEMPLATE.postForObject(serverUrl + "/localCalculationFirstParty", req, BigInteger.class);
     }
 
     public BigInteger removeV2(String id, BigInteger partial) {
         RemoveV2Request req = new RemoveV2Request();
         req.setId(id);
         req.setPartial(partial);
-        if (TESTING) {
-            return SERVER.removeV2(req);
+        if (testing) {
+            return server.removeV2(req);
         }
-        return REST_TEMPLATE.postForObject(SERVERRURL + "/removeV2", req, BigInteger.class);
+        return REST_TEMPLATE.postForObject(serverUrl + "/removeV2", req, BigInteger.class);
     }
 
     public BigInteger localCalculationNthParty(String id, List<BigInteger[]> obfuscated) {
         LocalCalculationPartyRequest req = new LocalCalculationPartyRequest();
         req.setId(id);
         req.setObfuscated(obfuscated);
-        if (TESTING) {
-            return SERVER.localCalculationNthParty(req);
+        if (testing) {
+            return server.localCalculationNthParty(req);
         }
-        return REST_TEMPLATE.postForObject(SERVERRURL + "/localCalculationNthParty", req, BigInteger.class);
+        return REST_TEMPLATE.postForObject(serverUrl + "/localCalculationNthParty", req, BigInteger.class);
     }
 
     public BigInteger[] getObfuscated(String id) {
         NPartyRequest req = new NPartyRequest();
         req.setId(id);
-        if (TESTING) {
-            return SERVER.getObfuscated(req).getObfuscated();
+        if (testing) {
+            return server.getObfuscated(req).getObfuscated();
         }
-        return REST_TEMPLATE.postForObject(SERVERRURL + "/getObfuscated", req, ObfuscatedResponse.class)
+        return REST_TEMPLATE.postForObject(serverUrl + "/getObfuscated", req, ObfuscatedResponse.class)
                 .getObfuscated();
     }
 
     public String getServerId() {
-        if (TESTING) {
-            return SERVER.getServerId();
+        if (testing) {
+            return server.getServerId();
         }
-        return REST_TEMPLATE.getForEntity(SERVERRURL + "/getServerId", String.class).getBody();
+        return REST_TEMPLATE.getForEntity(serverUrl + "/getServerId", String.class).getBody();
     }
 
     public int getPopulation() {
-        if (TESTING) {
-            return SERVER.getPopulation();
+        if (testing) {
+            return server.getPopulation();
         }
-        return REST_TEMPLATE.getForEntity(SERVERRURL + "/getPopulation", Integer.class).getBody();
+        return REST_TEMPLATE.getForEntity(serverUrl + "/getPopulation", Integer.class).getBody();
     }
 }

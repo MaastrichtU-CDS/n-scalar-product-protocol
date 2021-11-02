@@ -86,6 +86,8 @@
 
     <module name="TreeWalker">
 
+        <module name="SuppressWarningsHolder"/>
+
         <!-- not making javadoc mandatory
         <module name="MissingJavadocMethod"/> -->
 
@@ -103,7 +105,6 @@
 
         <!-- Checks for imports                              -->
         <!-- See https://checkstyle.org/config_imports.html -->
-        <module name="AvoidStarImport"/>
         <module name="IllegalImport"/> <!-- defaults to sun.* packages -->
         <module name="RedundantImport"/>
         <module name="UnusedImports">
@@ -168,11 +169,6 @@
         <module name="TodoComment"/>
         <module name="UpperEll"/>
 
-        <!-- https://checkstyle.org/config_filters.html#SuppressionXpathFilter -->
-        <module name="SuppressionXpathFilter">
-            <property name="file" value="${org.checkstyle.sun.suppressionxpathfilter.config}"
-                      default="checkstyle-xpath-suppressions.xml"/>
-            <property name="optional" value="true"/>
-        </module>
     </module>
+    <module name="SuppressWarningsFilter"/>
 </module>
