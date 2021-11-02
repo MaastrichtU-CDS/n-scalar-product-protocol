@@ -1,10 +1,12 @@
 package com.webservice;
 
+import com.station.CentralStation;
 import com.station.DataStation;
 import com.station.SecretStation;
 import com.webservice.domain.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -27,8 +29,13 @@ public class Server {
     @Value ("${servers}")
     private List<String> servers;
 
+    public void setEndpoints(List<ServerEndpoint> endpoints) {
+        this.endpoints = endpoints;
+    }
+
     @PutMapping ("InitData")
     public void InitData() {
+        reset();
         localData = new BigInteger[3];
         localData[0] = BigInteger.ZERO;
         localData[1] = BigInteger.ZERO;
@@ -40,14 +47,43 @@ public class Server {
         this.population = 3;
     }
 
+    public void reset() {
+        dataStations = new HashMap<>();
+        secretStations = new HashMap<>();
+        localData = null;
+    }
+
     @PutMapping ("Random")
     public void InitRandom() {
+        reset();
         for (String s : servers) {
             endpoints.add(new ServerEndpoint(s));
         }
         secretStations.put("start", new SecretStation(endpoints.stream().map(s -> s.getServerId()).collect(
                 Collectors.toList()), 3));
         this.population = 3;
+    }
+
+    @GetMapping ("nparty")
+    public BigInteger nparty() {
+        RestTemplate REST_TEMPLATE = new RestTemplate();
+        REST_TEMPLATE.put("http://localhost:8080/Random", "");
+        REST_TEMPLATE.put("http://localhost:8081/InitData", "");
+        REST_TEMPLATE.put("http://localhost:8082/InitData", "");
+        REST_TEMPLATE.put("http://localhost:8083/InitData", "");
+
+        CentralStation station = new CentralStation();
+        List<ServerEndpoint> servers = new ArrayList<>();
+        ServerEndpoint secret = null;
+        for (ServerEndpoint s : endpoints) {
+            if (!s.getServerId().equals("0")) {
+                servers.add(s);
+            } else {
+                secret = s;
+            }
+        }
+        Protocol prot = new Protocol(servers, secret, "start");
+        return station.calculateNPartyScalarProduct(prot);
     }
 
     public Server() {
@@ -68,9 +104,12 @@ public class Server {
     }
 
     //For sharing local secret externally
-    @GetMapping ("getSecretPart")
+    @PostMapping ("getSecretPart")
     public SecretPartResponse getSecretPart(@RequestBody GetSecretPartRequest req) {
         SecretPartResponse response = new SecretPartResponse();
+        if (secretStations.get(req.getId()).getPart(req.getServerId()) == null) {
+            System.out.println("");
+        }
         response.setSecretPart(secretStations.get(req.getId()).getPart(req.getServerId()));
         return response;
     }
@@ -80,6 +119,9 @@ public class Server {
     public void retrieveSecret(@RequestBody RetrieveSecretRequest req) {
         for (ServerEndpoint end : endpoints) {
             if (end.getServerId().equals(req.getSource())) {
+                if (end.getSecretPart(req.getId(), serverId) == null) {
+                    return;
+                }
                 dataStations.get(req.getId()).setLocalSecret(end.getSecretPart(req.getId(), serverId));
             }
         }
@@ -120,7 +162,7 @@ public class Server {
         return dataStations.get(req.getId()).localCalculationNthParty(req.getObfuscated());
     }
 
-    @GetMapping ("getObfuscated")
+    @PostMapping ("getObfuscated")
     public ObfuscatedResponse getObfuscated(@RequestBody NPartyRequest req) {
         ObfuscatedResponse res = new ObfuscatedResponse();
         res.setObfuscated(dataStations.get(req.getId()).getObfuscated());
