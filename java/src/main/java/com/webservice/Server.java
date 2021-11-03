@@ -1,12 +1,10 @@
 package com.webservice;
 
-import com.station.CentralStation;
 import com.station.DataStation;
 import com.station.SecretStation;
 import com.webservice.domain.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.RestTemplate;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -52,7 +50,7 @@ public class Server {
         this.population = magicnumber;
     }
 
-    public void reset() {
+    private void reset() {
         dataStations = new HashMap<>();
         secretStations = new HashMap<>();
         endpoints = new ArrayList<>();
@@ -60,18 +58,18 @@ public class Server {
     }
 
     @PutMapping ("initRandom")
-    public void initRandom() {
+    public void initRandom(@RequestBody Integer population) {
         reset();
         for (String s : servers) {
             endpoints.add(new ServerEndpoint(s));
         }
         secretStations.put("start", new SecretStation(endpoints.stream().map(s -> s.getServerId()).collect(
-                Collectors.toList()), magicnumber));
-        this.population = magicnumber;
+                Collectors.toList()), population));
+        this.population = population;
     }
 
     @PutMapping ("collectGarbage")
-    public void collectGarbage(String id) {
+    public void collectGarbage(@RequestBody String id) {
         // remove the datastations associated with this calculation so memory doesn't overflow
         // can only be called after RemoveV2 has been called for this calculation
         dataStations.keySet().remove(id);
@@ -82,28 +80,6 @@ public class Server {
         for (ServerEndpoint end : endpoints) {
             end.collectGarbage(id);
         }
-    }
-
-    @GetMapping ("nparty")
-    public BigInteger nparty() {
-        RestTemplate restTemplate = new RestTemplate();
-        restTemplate.put("http://localhost:8080/initRandom", "");
-        restTemplate.put("http://localhost:8081/initData", "");
-        restTemplate.put("http://localhost:8082/initData", "");
-        restTemplate.put("http://localhost:8083/initData", "");
-
-        CentralStation station = new CentralStation();
-        List<ServerEndpoint> servers = new ArrayList<>();
-        ServerEndpoint secret = new ServerEndpoint("http://localhost:8080");
-        for (ServerEndpoint s : endpoints) {
-            if (!s.getServerId().equals("0")) {
-                servers.add(s);
-            } else {
-                secret = s;
-            }
-        }
-        Protocol prot = new Protocol(servers, secret, "start");
-        return station.calculateNPartyScalarProduct(prot);
     }
 
     public Server() {

@@ -14,13 +14,7 @@ public class ServerTest {
         Server server = new Server(Arrays.asList("a"));
         server.initData();
         try {
-            server.initRandom();
-        } catch (Exception e) {
-            //who cares
-        }
-
-        try {
-            server.nparty();
+            server.initRandom(3);
         } catch (Exception e) {
             //who cares
         }

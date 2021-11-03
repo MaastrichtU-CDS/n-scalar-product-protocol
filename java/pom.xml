@@ -38,27 +38,23 @@
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-test</artifactId>
-            <scope>test</scope>
+            <artifactId>spring-boot</artifactId>
+            <version>2.5.6</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-web</artifactId>
+            <version>5.3.12</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-beans</artifactId>
+            <version>5.3.12</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-webflux</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.ws</groupId>
-            <artifactId>spring-ws-core</artifactId>
-            <version>2.2.0.RELEASE</version>
-        </dependency>
-        <dependency>
-            <groupId>javax.json</groupId>
-            <artifactId>javax.json-api</artifactId>
-            <version>1.1.4</version>
-        </dependency>
-        <dependency>
-            <groupId>org.glassfish</groupId>
-            <artifactId>javax.json</artifactId>
-            <version>1.0.4</version>
+            <artifactId>spring-boot-autoconfigure</artifactId>
+            <version>2.5.6</version>
         </dependency>
     </dependencies>
 
@@ -76,6 +72,9 @@
                         </goals>
                         <configuration>
                             <failOnWarning>true</failOnWarning>
+                            <usedDependencies>
+                                <usedDependency>org.springframework.boot:spring-boot-starter-web</usedDependency>
+                            </usedDependencies>
                         </configuration>
                     </execution>
                 </executions>
@@ -130,6 +129,7 @@
                                     <excludes>
                                         <!--Exclude gui and main package from testcoverage -->
                                         <exclude>com.WebserviceDtApplication</exclude>
+                                        <exclude>com.webservice.CentralServer</exclude>
                                         <exclude>com</exclude>
                                     </excludes>
                                     <element>PACKAGE</element>
