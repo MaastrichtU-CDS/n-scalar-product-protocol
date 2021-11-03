@@ -147,7 +147,12 @@
                     </execution>
                 </executions>
             </plugin>
-
+            <!--            Turn this on if you want to run just the n-scalar party protocol, turn it off to be able to
+            use it as a library, stupid spring boot ruins libraries apparently-->
+            <!--            <plugin>-->
+            <!--                <groupId>org.springframework.boot</groupId>-->
+            <!--                <artifactId>spring-boot-maven-plugin</artifactId>-->
+            <!--            </plugin>-->
         </plugins>
     </build>
 
