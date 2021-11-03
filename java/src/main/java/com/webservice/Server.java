@@ -69,6 +69,20 @@ public class Server {
         this.population = magicnumber;
     }
 
+    @PutMapping ("collectGarbage")
+    public void collectGarbage(String id) {
+        // remove the datastations associated with this calculation so memory doesn't overflow
+        // can only be called after RemoveV2 has been called for this calculation
+        dataStations.keySet().remove(id);
+        secretStations.keySet().remove(id);
+    }
+
+    public void collectGarbageExternal(String id) {
+        for (ServerEndpoint end : endpoints) {
+            end.collectGarbage(id);
+        }
+    }
+
     @GetMapping ("nparty")
     public BigInteger nparty() {
         RestTemplate restTemplate = new RestTemplate();
@@ -112,9 +126,6 @@ public class Server {
     @PostMapping ("getSecretPart")
     public SecretPartResponse getSecretPart(@RequestBody GetSecretPartRequest req) {
         SecretPartResponse response = new SecretPartResponse();
-        if (secretStations.get(req.getId()).getPart(req.getServerId()) == null) {
-            System.out.println("");
-        }
         response.setSecretPart(secretStations.get(req.getId()).getPart(req.getServerId()));
         return response;
     }
@@ -159,7 +170,10 @@ public class Server {
 
     @PostMapping ("removeV2")
     public BigInteger removeV2(@RequestBody RemoveV2Request req) {
-        return dataStations.get(req.getId()).removeV2(req.getPartial());
+        BigInteger res = dataStations.get(req.getId()).removeV2(req.getPartial());
+        collectGarbage(req.getId());
+        collectGarbageExternal(req.getId());
+        return res;
     }
 
     @PostMapping ("localCalculationNthParty")

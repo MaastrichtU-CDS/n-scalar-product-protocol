@@ -106,6 +106,14 @@ public class ServerEndpoint {
         return REST_TEMPLATE.postForObject(serverUrl + "/removeV2", req, BigInteger.class);
     }
 
+    public void collectGarbage(String id) {
+        if (testing) {
+            server.collectGarbage(id);
+        } else {
+            REST_TEMPLATE.put(serverUrl + "/collectGarbage", id);
+        }
+    }
+
     public BigInteger localCalculationNthParty(String id, List<BigInteger[]> obfuscated) {
         LocalCalculationPartyRequest req = new LocalCalculationPartyRequest();
         req.setId(id);
