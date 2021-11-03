@@ -17,7 +17,7 @@ public class PerformanceTest {
 
     @Test
     public void testCalculateNPartyScalarProduct() {
-        for (int n = 2; n < 8; n++) {
+        for (int n = 2; n < 5; n++) {
             long sum = 0;
             for (int population = 4000; population < 4001; population++) {
                 List<Server> servers = new ArrayList<>();

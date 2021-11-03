@@ -55,6 +55,7 @@ public class Server {
     public void reset() {
         dataStations = new HashMap<>();
         secretStations = new HashMap<>();
+        endpoints = new ArrayList<>();
         localData = null;
     }
 
@@ -93,7 +94,7 @@ public class Server {
 
         CentralStation station = new CentralStation();
         List<ServerEndpoint> servers = new ArrayList<>();
-        ServerEndpoint secret = null;
+        ServerEndpoint secret = new ServerEndpoint("http://localhost:8080");
         for (ServerEndpoint s : endpoints) {
             if (!s.getServerId().equals("0")) {
                 servers.add(s);

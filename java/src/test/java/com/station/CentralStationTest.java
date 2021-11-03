@@ -53,6 +53,43 @@ public class CentralStationTest {
     }
 
     @Test
+    public void testNonsense() {
+        List<Server> servers = new ArrayList<>();
+        List<ServerEndpoint> endpoints = new ArrayList<>();
+        List<BigInteger[]> datasets = new ArrayList<>();
+        ;
+        for (int i = 0; i < 3; i++) {
+            BigInteger[] data = new BigInteger[3];
+            data[0] = BigInteger.ZERO;
+            data[1] = BigInteger.ZERO;
+            data[2] = BigInteger.ONE;
+
+            Server server = new Server(String.valueOf(i), data);
+            endpoints.add(new ServerEndpoint(server));
+            servers.add(server);
+            datasets.add(data);
+        }
+        Server secret = new Server(String.valueOf(3), servers, 3);
+        ServerEndpoint secretEndpoint = new ServerEndpoint(secret);
+        CentralStation central = new CentralStation();
+
+        List<ServerEndpoint> all = new ArrayList<>();
+        all.addAll(endpoints);
+        all.add(secretEndpoint);
+        for (Server s : servers) {
+            s.setEndpoints(all);
+        }
+        secret.setEndpoints(all);
+
+        // calculate expected anwser:
+        BigInteger expected = matrixDiagonalMultiplication(datasets, datasets.get(0).length);
+
+        Protocol prot = new Protocol(endpoints, secretEndpoint, "start");
+        BigInteger result = central.calculateNPartyScalarProduct(prot);
+        assertEquals(expected, result);
+    }
+
+    @Test
     public void testDetermineSubprotocols() {
         for (int population = 1; population < 10; population++) {
             List<Server> servers = new ArrayList<>();
