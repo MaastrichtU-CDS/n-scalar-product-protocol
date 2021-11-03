@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>org.example</groupId>
+    <groupId>com.florian</groupId>
     <artifactId>n-scalar-product-protocol</artifactId>
     <version>2.0-SNAPSHOT</version>
 
@@ -131,6 +131,7 @@
                                         <exclude>com.WebserviceDtApplication</exclude>
                                         <exclude>com.webservice.CentralServer</exclude>
                                         <exclude>com</exclude>
+                                        <exclude>com.florian</exclude>
                                     </excludes>
                                     <element>PACKAGE</element>
                                     <limits>
