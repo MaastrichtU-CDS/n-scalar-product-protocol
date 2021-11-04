@@ -12,7 +12,6 @@
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
         <version>2.4.3</version>
-        <relativePath/>
     </parent>
 
     <properties>
@@ -132,6 +131,7 @@
                                         <exclude>com.webservice.CentralServer</exclude>
                                         <exclude>com</exclude>
                                         <exclude>com.florian</exclude>
+                                        <exclude>com.florian.nscalarproduct</exclude>
                                     </excludes>
                                     <element>PACKAGE</element>
                                     <limits>
