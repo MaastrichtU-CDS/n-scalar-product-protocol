@@ -12,31 +12,36 @@ import java.util.List;
 
 @RestController
 public class CentralServer {
+    private static final RestTemplate REST_TEMPLATE = new RestTemplate();
 
     @Value ("${servers}")
-    private List<String> servers;
+    protected List<String> servers;
     @Value ("${secretServer}")
-    private String secretServer;
+    protected String secretServer;
 
     @GetMapping ("nparty")
     public BigInteger nParty() {
         //Starting point, this can be called on the central node in vantage6
-        RestTemplate restTemplate = new RestTemplate();
+
         List<ServerEndpoint> endpoints = new ArrayList<>();
 
         for (String s : servers) {
-            restTemplate.put(s + "/initData", "");
             endpoints.add(new ServerEndpoint(s));
+            initData(s);
         }
 
         Integer population = endpoints.get(0).getPopulation();
 
-        restTemplate.put(secretServer + "/initRandom", population);
+        REST_TEMPLATE.put(secretServer + "/initRandom", population);
         ServerEndpoint secret = new ServerEndpoint(secretServer);
 
         CentralStation station = new CentralStation();
 
         Protocol prot = new Protocol(endpoints, secret, "start");
         return station.calculateNPartyScalarProduct(prot);
+    }
+
+    public void initData(String s) {
+        REST_TEMPLATE.put(s + "/initData", "");
     }
 }

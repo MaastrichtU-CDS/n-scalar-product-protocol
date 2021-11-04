@@ -18,9 +18,9 @@ public class Server {
     private Map<String, DataStation> dataStations = new HashMap<>();
     private Map<String, SecretStation> secretStations = new HashMap<>();
     @Value ("${server}")
-    private String serverId;
-    private BigInteger[] localData;
-    private int population;
+    protected String serverId;
+    protected BigInteger[] localData;
+    protected int population;
     private final int magicnumber = 3; //purely here to deal with checkstyle for the moment
 
     private List<ServerEndpoint> endpoints = new ArrayList<>();
