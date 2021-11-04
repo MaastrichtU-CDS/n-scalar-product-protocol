@@ -12,7 +12,7 @@ import java.util.List;
 
 @RestController
 public class CentralServer {
-    private static final RestTemplate REST_TEMPLATE = new RestTemplate();
+    protected static final RestTemplate REST_TEMPLATE = new RestTemplate();
 
     @Value ("${servers}")
     protected List<String> servers;
