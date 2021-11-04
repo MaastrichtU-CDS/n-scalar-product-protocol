@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 
 @RestController
 public class Server {
-    private Map<String, DataStation> dataStations = new HashMap<>();
+    protected Map<String, DataStation> dataStations = new HashMap<>();
     private Map<String, SecretStation> secretStations = new HashMap<>();
     @Value ("${server}")
     protected String serverId;

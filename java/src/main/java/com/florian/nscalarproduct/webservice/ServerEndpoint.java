@@ -8,9 +8,9 @@ import java.math.BigInteger;
 import java.util.List;
 
 public class ServerEndpoint {
-    private static final RestTemplate REST_TEMPLATE = new RestTemplate();
-    private final String serverUrl;
-    private final Server server;
+    protected static final RestTemplate REST_TEMPLATE = new RestTemplate();
+    protected final String serverUrl;
+    protected final Server server;
     protected final boolean testing;
     //ToDo figure out how to  automatically remove the if-statements that use this flag in production code
 
