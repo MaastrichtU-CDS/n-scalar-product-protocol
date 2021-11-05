@@ -48,6 +48,7 @@ public class Server {
         dataStations = new HashMap<>();
         secretStations = new HashMap<>();
         localData = null;
+        endpoints = new ArrayList<>();
     }
 
     public void setEndpoints(List<ServerEndpoint> endpoints) {

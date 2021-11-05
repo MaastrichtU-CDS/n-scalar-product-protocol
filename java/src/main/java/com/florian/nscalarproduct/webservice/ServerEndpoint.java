@@ -147,4 +147,11 @@ public class ServerEndpoint {
         }
         return REST_TEMPLATE.getForEntity(serverUrl + "/getPopulation", Integer.class).getBody();
     }
+
+    public void initEndpoints() {
+        if (!testing) {
+            REST_TEMPLATE.put(serverUrl + "/initEndpoints", null);
+        }
+
+    }
 }
