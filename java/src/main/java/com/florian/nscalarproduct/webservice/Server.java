@@ -16,30 +16,59 @@ import java.util.stream.Collectors;
 @RestController
 public class Server {
     protected Map<String, DataStation> dataStations = new HashMap<>();
-    private Map<String, SecretStation> secretStations = new HashMap<>();
+    protected Map<String, SecretStation> secretStations = new HashMap<>();
     @Value ("${server}")
     protected String serverId;
     protected BigInteger[] localData;
     protected int population;
-    private final int magicnumber = 3; //purely here to deal with checkstyle for the moment
+    private static final int MAGICN = 3;
 
     private List<ServerEndpoint> endpoints = new ArrayList<>();
 
     @Value ("${servers}")
     private List<String> servers;
 
+    public Server(List<String> servers) {
+        this.servers = servers;
+    }
+
+    public Server() {
+    }
+
+    @PutMapping ("initEndpoints")
+    public void initEndpoints() {
+        if (servers != null) {
+            for (String s : servers) {
+                endpoints.add(new ServerEndpoint(s));
+            }
+        }
+    }
+
+    protected void reset() {
+        dataStations = new HashMap<>();
+        secretStations = new HashMap<>();
+        localData = null;
+    }
+
     public void setEndpoints(List<ServerEndpoint> endpoints) {
         this.endpoints = endpoints;
     }
 
-    public Server(List<String> servers) {
-        this.servers = servers;
+    @PutMapping ("initRandom")
+    public void initRandom(@RequestBody Integer population) {
+        //this method exists purely as an example of how to init the secretStations
+        reset();
+        initEndpoints();
+        secretStations.put("start", new SecretStation(endpoints.stream().map(s -> s.getServerId()).collect(
+                Collectors.toList()), population));
+        this.population = population;
     }
 
     @PutMapping ("initData")
     public void initData() {
         reset();
-        localData = new BigInteger[magicnumber];
+        initEndpoints();
+        localData = new BigInteger[MAGICN];
         localData[0] = BigInteger.ZERO;
         localData[1] = BigInteger.ZERO;
         localData[2] = BigInteger.ONE;
@@ -47,26 +76,9 @@ public class Server {
             endpoints.add(new ServerEndpoint(s));
         }
         dataStations.put("start", new DataStation(serverId, localData));
-        this.population = magicnumber;
+        this.population = MAGICN;
     }
 
-    private void reset() {
-        dataStations = new HashMap<>();
-        secretStations = new HashMap<>();
-        endpoints = new ArrayList<>();
-        localData = null;
-    }
-
-    @PutMapping ("initRandom")
-    public void initRandom(@RequestBody Integer population) {
-        reset();
-        for (String s : servers) {
-            endpoints.add(new ServerEndpoint(s));
-        }
-        secretStations.put("start", new SecretStation(endpoints.stream().map(s -> s.getServerId()).collect(
-                Collectors.toList()), population));
-        this.population = population;
-    }
 
     @PutMapping ("collectGarbage")
     public void collectGarbage(@RequestBody String id) {
@@ -80,9 +92,6 @@ public class Server {
         for (ServerEndpoint end : endpoints) {
             end.collectGarbage(id);
         }
-    }
-
-    public Server() {
     }
 
     public Server(String serverId, List<Server> servers, int length) {

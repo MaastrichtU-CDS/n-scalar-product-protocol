@@ -22,6 +22,8 @@ public class CentralServer {
     @GetMapping ("nparty")
     public BigInteger nParty() {
         //Starting point, this can be called on the central node in vantage6
+        //this is just an example, actual use might need to use their own implementation due to how the secret should be
+        //initialized
 
         List<ServerEndpoint> endpoints = new ArrayList<>();
 

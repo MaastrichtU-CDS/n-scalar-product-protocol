@@ -8,11 +8,14 @@ public class ServerTest {
 
     @Test
     public void testDummy() {
-        //ToDo replace this with actual unit tests once initData/initRandom/nparty are implemented properly
-        //Currently this is only here to make testcoverage happy
+        //Currently this is only here to make testcoverage happy as these two methods are purely as an example
 
         Server server = new Server(Arrays.asList("a"));
-        server.initData();
+        try {
+            server.initData();
+        } catch (Exception e) {
+            //who cares
+        }
         try {
             server.initRandom(3);
         } catch (Exception e) {
