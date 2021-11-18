@@ -82,6 +82,64 @@ public class CentralStationTest {
         }
     }
 
+    @Test
+    public void scaling() {
+        for (int n = 2; n < 10; n++) {
+            Res r = new Res();
+            r.messages = calMessages(n);
+            r.protocols = 1;
+
+            List<Server> servers = new ArrayList<>();
+            List<ServerEndpoint> endpoints = new ArrayList<>();
+            List<BigInteger[]> datasets = new ArrayList<>();
+            ;
+            for (int i = 0; i < n; i++) {
+                BigInteger[] data = DataStationTest.createData(n);
+                Server server = new Server(String.valueOf(i), data);
+                endpoints.add(new ServerEndpoint(server));
+                servers.add(server);
+                datasets.add(data);
+            }
+
+            Server secret = new Server(String.valueOf(n), servers, n);
+            ServerEndpoint secretEndpoint = new ServerEndpoint(secret);
+
+            List<ServerEndpoint> all = new ArrayList<>();
+            all.addAll(endpoints);
+            all.add(secretEndpoint);
+            for (Server s : servers) {
+                s.setEndpoints(all);
+            }
+            secret.setEndpoints(all);
+
+            determineSubProtocols(endpoints, secretEndpoint, "start", r);
+
+            System.out.println("N: " + n + " protocols: " + r.protocols + " messages: " + r.messages);
+
+        }
+    }
+
+    private void determineSubProtocols(List<ServerEndpoint> servers, ServerEndpoint
+            secretServer, String source, Res r) {
+        CentralStation central = new CentralStation();
+        List<Protocol> subprotocols = central.determineSubprotocols(servers, secretServer, source);
+        for (Protocol p : subprotocols) {
+            r.protocols++;
+            r.messages += calMessages(p.getServers().size());
+            determineSubProtocols(p.getServers(), p.getSecretServer(), p.getId(), r);
+        }
+    }
+
+    private class Res {
+        int protocols;
+        int messages;
+    }
+
+    private int calMessages(int n) {
+        return n + n * n;
+    }
+
+
     //calculates  n! / (x!(n−x)!) for every x >= 2 < n
     private BigInteger calculateExpectedCombinations(int n) {
         BigInteger nFactorial = factorial(n);

@@ -1,4 +1,4 @@
-package com.florian.nscalarproduct;
+package com.florian.nscalarproduct.performance;
 
 
 import com.florian.nscalarproduct.station.CentralStation;
@@ -20,8 +20,8 @@ public class PerformanceTest {
     //TURN THIS OF WHEN BUILDING
     @Test
     public void testCalculateNPartyScalarProduct() {
-        for (int n = 2; n < 3; n++) {
-            for (int population = 2500; population < 5001; population += 500) {
+        for (int n = 7; n < 8; n++) {
+            for (int population = 4000; population < 5001; population += 500) {
                 List<Long> duration = new ArrayList<>();
                 for (int j = 0; j < 100; j++) {
                     List<Server> servers = new ArrayList<>();
@@ -64,5 +64,4 @@ public class PerformanceTest {
             }
         }
     }
-
 }

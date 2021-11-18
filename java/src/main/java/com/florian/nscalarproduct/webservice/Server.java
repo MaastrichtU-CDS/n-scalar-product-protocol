@@ -35,13 +35,20 @@ public class Server {
     public Server() {
     }
 
-    @PutMapping ("initEndpoints")
-    public void initEndpoints() {
+    private void initEndpoints() {
         if (servers != null) {
             for (String s : servers) {
                 endpoints.add(new ServerEndpoint(s));
             }
         }
+    }
+
+    @PutMapping ("setEndpoints")
+    public void setEndponts(@RequestBody EndpointRequest req) {
+        this.servers = req.getServers();
+        reset();
+        initEndpoints();
+
     }
 
     protected void reset() {

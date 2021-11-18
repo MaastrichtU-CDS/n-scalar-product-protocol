@@ -59,6 +59,16 @@
 
     <build>
         <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <excludes>
+                        <!--No need to run the performance test when building-->
+                        <exclude>**/performance/*.java</exclude>
+                    </excludes>
+                </configuration>
+            </plugin>
             <!--Dependency check-->
             <plugin>
                 <artifactId>maven-dependency-plugin</artifactId>
