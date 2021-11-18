@@ -35,8 +35,12 @@ public class Server {
     public Server() {
     }
 
-    private void initEndpoints() {
-        if (servers != null) {
+    @PutMapping ("initEndpoints")
+    public void initEndpoints() {
+        // only do this is servers is set and if endpoints is currently empty.
+        // if endpoints is not empty they have already been set via setEndpoints.
+        // setEndpoints is relevant for vantage6, which needs to dynamically determine the URLS.
+        if (servers != null && endpoints.size() == 0) {
             for (String s : servers) {
                 endpoints.add(new ServerEndpoint(s));
             }
