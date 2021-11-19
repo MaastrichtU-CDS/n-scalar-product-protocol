@@ -1,4 +1,4 @@
-package com.florian.nscalarproduct.performance;
+package com.florian.nscalarproduct.notunittests.performance;
 
 
 import com.florian.nscalarproduct.station.CentralStation;
