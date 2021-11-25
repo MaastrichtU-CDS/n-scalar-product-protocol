@@ -3,7 +3,11 @@ package com.florian.nscalarproduct.webservice;
 import com.florian.nscalarproduct.station.DataStation;
 import com.florian.nscalarproduct.station.SecretStation;
 import com.florian.nscalarproduct.webservice.domain.*;
+import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
+import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigInteger;
@@ -14,7 +18,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @RestController
-public class Server {
+public class Server implements ApplicationContextAware {
     protected Map<String, DataStation> dataStations = new HashMap<>();
     protected Map<String, SecretStation> secretStations = new HashMap<>();
     @Value ("${server}")
@@ -22,6 +26,7 @@ public class Server {
     protected BigInteger[] localData;
     protected int population;
     private static final int MAGICN = 3;
+    private ApplicationContext context;
 
     private List<ServerEndpoint> endpoints = new ArrayList<>();
 
@@ -194,5 +199,16 @@ public class Server {
     @GetMapping ("getPopulation")
     public int getPopulation() {
         return population;
+    }
+
+    @PutMapping ("kill")
+    public void kill() {
+        ((ConfigurableApplicationContext) context).close();
+    }
+
+    @Override
+    public void setApplicationContext(ApplicationContext ctx) throws BeansException {
+        this.context = ctx;
+
     }
 }
