@@ -52,7 +52,7 @@ public class Server implements ApplicationContextAware {
         }
     }
 
-    @PutMapping ("setEndpoints")
+    @PostMapping ("setEndpoints")
     public void setEndponts(@RequestBody EndpointRequest req) {
         this.servers = req.getServers();
         reset();
