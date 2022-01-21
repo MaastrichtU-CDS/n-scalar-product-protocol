@@ -60,6 +60,11 @@ public class Server implements ApplicationContextAware {
 
     }
 
+    @PostMapping ("setID")
+    public void setId(@RequestBody String id) {
+        this.serverId = id;
+    }
+
     protected void reset() {
         dataStations = new HashMap<>();
         secretStations = new HashMap<>();
