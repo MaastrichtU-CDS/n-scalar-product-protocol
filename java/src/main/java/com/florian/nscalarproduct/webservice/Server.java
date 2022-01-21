@@ -61,7 +61,7 @@ public class Server implements ApplicationContextAware {
     }
 
     @PostMapping ("setID")
-    public void setId(@RequestBody String id) {
+    public void setId(String id) {
         this.serverId = id;
     }
 
