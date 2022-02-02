@@ -16,6 +16,8 @@ public class EncryptedSecretPart {
 
     public EncryptedSecretPart(SecretPart part, PublicElgamalKey publicKey) {
         Elgamal elgamal = new Elgamal(publicKey);
+
+        this.id = part.getId();
         this.r = elgamal.encrypt(part.getR());
         diagonal = new EncryptedElgamal[part.getDiagonal().length];
         BigInteger[] diagonalPart = part.getDiagonal();
@@ -37,7 +39,7 @@ public class EncryptedSecretPart {
     }
 
     public void setR(EncryptedElgamal r) {
-        r = r;
+        this.r = r;
     }
 
     public String getId() {
