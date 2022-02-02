@@ -1,5 +1,6 @@
 package com.florian.nscalarproduct.webservice;
 
+import com.florian.nscalarproduct.secret.EncryptedSecretPart;
 import com.florian.nscalarproduct.station.DataStation;
 import com.florian.nscalarproduct.station.SecretStation;
 import com.florian.nscalarproduct.webservice.domain.*;
@@ -134,9 +135,11 @@ public class Server implements ApplicationContextAware {
     @PostMapping ("getSecretPart")
     public SecretPartResponse getSecretPart(@RequestBody GetSecretPartRequest req) {
         SecretPartResponse response = new SecretPartResponse();
-        response.setSecretPart(secretStations.get(req.getId()).getPart(req.getServerId()));
+        response.setSecretPart(new EncryptedSecretPart(secretStations.get(req.getId()).getPart(req.getServerId()),
+                                                       req.getPublicKey()));
         return response;
     }
+
 
     //For retrieving the local secret from an external source
     @PutMapping ("retrieveSecret")
@@ -214,6 +217,5 @@ public class Server implements ApplicationContextAware {
     @Override
     public void setApplicationContext(ApplicationContext ctx) throws BeansException {
         this.context = ctx;
-
     }
 }

@@ -1,18 +1,18 @@
 package com.florian.nscalarproduct.webservice.domain;
 
-import com.florian.nscalarproduct.secret.SecretPart;
+import com.florian.nscalarproduct.secret.EncryptedSecretPart;
 
 public class SecretPartResponse {
-    private SecretPart secretPart;
+    private EncryptedSecretPart secretPart;
 
     public SecretPartResponse() {
     }
 
-    public SecretPart getSecretPart() {
+    public EncryptedSecretPart getSecretPart() {
         return secretPart;
     }
 
-    public void setSecretPart(SecretPart secretPart) {
+    public void setSecretPart(EncryptedSecretPart secretPart) {
         this.secretPart = secretPart;
     }
 }

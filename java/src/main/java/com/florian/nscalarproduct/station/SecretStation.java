@@ -1,6 +1,7 @@
 package com.florian.nscalarproduct.station;
 
 
+import com.florian.nscalarproduct.encryption.Elgamal;
 import com.florian.nscalarproduct.secret.Secret;
 import com.florian.nscalarproduct.secret.SecretPart;
 import com.florian.nscalarproduct.util.Util;
@@ -11,6 +12,7 @@ import java.util.List;
 
 public class SecretStation extends Station {
     private Secret secret;
+    private Elgamal elgamal = new Elgamal();
 
     public SecretStation() {
     }

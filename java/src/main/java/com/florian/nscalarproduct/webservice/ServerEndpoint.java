@@ -1,5 +1,6 @@
 package com.florian.nscalarproduct.webservice;
 
+import com.florian.nscalarproduct.encryption.Elgamal;
 import com.florian.nscalarproduct.secret.SecretPart;
 import com.florian.nscalarproduct.webservice.domain.*;
 import org.springframework.web.client.RestTemplate;
@@ -31,11 +32,17 @@ public class ServerEndpoint {
         GetSecretPartRequest req = new GetSecretPartRequest();
         req.setId(id);
         req.setServerId(serverId);
+        Elgamal elgamal = new Elgamal();
+        elgamal.generateKeys();
+        req.setPublicKey(elgamal.getPublicKey());
         if (testing) {
-            return server.getSecretPart(req).getSecretPart();
+            SecretPartResponse response = server.getSecretPart(req);
+            return new SecretPart(response.getSecretPart(), elgamal);
+        } else {
+            SecretPartResponse response = REST_TEMPLATE.postForObject(serverUrl + "/getSecretPart", req,
+                                                                      SecretPartResponse.class);
+            return new SecretPart(response.getSecretPart(), elgamal);
         }
-        return REST_TEMPLATE.postForObject(serverUrl + "/getSecretPart", req, SecretPartResponse.class)
-                .getSecretPart();
     }
 
     //For retrieving the local secret from an external source
