@@ -144,14 +144,17 @@ public class Server implements ApplicationContextAware {
     //For retrieving the local secret from an external source
     @PutMapping ("retrieveSecret")
     public void retrieveSecret(@RequestBody RetrieveSecretRequest req) {
-        for (ServerEndpoint end : endpoints) {
-            if (end.getServerId().equals(req.getSource())) {
-                if (end.getSecretPart(req.getId(), serverId) == null) {
-                    return;
-                }
-                dataStations.get(req.getId()).setLocalSecret(end.getSecretPart(req.getId(), serverId));
+        endpoints.parallelStream().forEach(x -> retrieveSecret(req, x));
+    }
+
+    private boolean retrieveSecret(RetrieveSecretRequest req, ServerEndpoint end) {
+        if (end.getServerId().equals(req.getSource())) {
+            if (end.getSecretPart(req.getId(), serverId) == null) {
+                return true;
             }
+            dataStations.get(req.getId()).setLocalSecret(end.getSecretPart(req.getId(), serverId));
         }
+        return false;
     }
 
     @PutMapping ("addSecretStation")

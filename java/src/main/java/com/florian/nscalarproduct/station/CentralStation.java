@@ -25,9 +25,7 @@ public class CentralStation {
         List<ServerEndpoint> others = servers.stream().filter(x -> x != first).collect(Collectors.toList());
 
         // retrieve secret
-        for (ServerEndpoint s : servers) {
-            s.retrieveSecret(id, secretServer.getServerId());
-        }
+        servers.parallelStream().forEach(s -> s.retrieveSecret(id, secretServer.getServerId()));
 
         // calculate partial result first datastation
         // this bit would be a webservice call
