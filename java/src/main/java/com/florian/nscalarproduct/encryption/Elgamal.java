@@ -13,7 +13,7 @@ public class Elgamal {
     private BigInteger privateKey;
     private PublicElgamalKey publicKey;
     private Random sc = new SecureRandom();
-    private final int bits = 256;
+    private final int bits = 128;
 
     public Elgamal() {
     }
