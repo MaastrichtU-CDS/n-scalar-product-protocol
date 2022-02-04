@@ -4,6 +4,8 @@ import com.florian.nscalarproduct.encryption.Elgamal;
 import com.florian.nscalarproduct.encryption.EncryptedElgamal;
 
 import java.math.BigInteger;
+import java.util.Arrays;
+import java.util.stream.Collectors;
 
 public class SecretPart {
     private BigInteger[] diagonal;
@@ -18,9 +20,8 @@ public class SecretPart {
         this.r = elgamal.decrypt(secretPart.getR());
         EncryptedElgamal[] encryptdDiagonal = secretPart.getDiagonal();
         diagonal = new BigInteger[encryptdDiagonal.length];
-        for (int i = 0; i < diagonal.length; i++) {
-            diagonal[i] = elgamal.decrypt(encryptdDiagonal[i]);
-        }
+        Arrays.stream(encryptdDiagonal).parallel().map(x -> elgamal.decrypt(x))
+                .collect(Collectors.toList()).toArray(diagonal);
     }
 
     public SecretPart(BigInteger[] diagonal, BigInteger r, String id) {
