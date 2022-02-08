@@ -3,26 +3,57 @@ package com.florian.nscalarproduct.encryption;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class ElgamalTest {
+public class EncryptionTest {
     private static int PRECISION = 10000;
 
 
     @Test
-    public void testElgamalEncryptDecrypt() {
-        for (int i = 0; i < 100; i++) {
-            BigInteger a = BigInteger.valueOf(2).pow(i);
-
-            Elgamal main = new Elgamal();
-            main.generateKeys();
-            Elgamal second = new Elgamal(main.getPublicKey());
-
-            EncryptedElgamal eA = second.encrypt(a);
-
-            assertEquals(main.decrypt(eA), a);
+    public void testEncryptions() {
+        List<Integer> times = new ArrayList<>();
+        for (int j = 0; j < 10000; j++) {
+            for (int i = 0; i < 100; i++) {
+                times.add(i);
+            }
         }
+        long elgamalStart = System.currentTimeMillis();
+        times.parallelStream().forEach(x -> testElgamal(x));
+        long elgamalEnd = System.currentTimeMillis();
+
+        long paillierStart = System.currentTimeMillis();
+        times.parallelStream().forEach(x -> testPaillier(x));
+        long paillierEnd = System.currentTimeMillis();
+
+        System.out.println("Elgamal: " + (elgamalEnd - elgamalStart) + "ms");
+        System.out.println("Paillier: " + (paillierEnd - paillierStart) + "ms");
+    }
+
+    private void testPaillier(int i) {
+        BigInteger a = BigInteger.valueOf(2).pow(i);
+
+        Paillier paillier = new Paillier();
+        paillier.generateKeyPair();
+        PublicPaillierKey p = paillier.getPublicKey();
+
+        BigInteger eA = p.encrypt(a);
+
+        assertEquals(paillier.decrypt(eA), a);
+    }
+
+    private void testElgamal(int i) {
+        BigInteger a = BigInteger.valueOf(2).pow(i);
+
+        Elgamal main = new Elgamal();
+        main.generateKeys();
+        Elgamal second = new Elgamal(main.getPublicKey());
+
+        EncryptedElgamal eA = second.encrypt(a);
+
+        assertEquals(main.decrypt(eA), a);
     }
 
     @Test
