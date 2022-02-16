@@ -16,7 +16,7 @@ public class CentralStationTest {
 
     @Test
     public void testCalculateNPartyScalarProduct() {
-        for (int n = 2; n < 6; n++) {
+        for (int n = 2; n < 5; n++) {
             for (int population = 2; population < 10; population++) {
                 List<Server> servers = new ArrayList<>();
                 List<ServerEndpoint> endpoints = new ArrayList<>();

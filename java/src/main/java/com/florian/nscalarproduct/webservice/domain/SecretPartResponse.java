@@ -3,16 +3,25 @@ package com.florian.nscalarproduct.webservice.domain;
 import com.florian.nscalarproduct.secret.EncryptedSecretPart;
 
 public class SecretPartResponse {
-    private EncryptedSecretPart secretPart;
+    private EncryptedSecretPart secretPartAES;
+    private byte[] aESkey;
 
     public SecretPartResponse() {
     }
 
-    public EncryptedSecretPart getSecretPart() {
-        return secretPart;
+    public EncryptedSecretPart getSecretPartAES() {
+        return secretPartAES;
     }
 
-    public void setSecretPart(EncryptedSecretPart secretPart) {
-        this.secretPart = secretPart;
+    public void setSecretPartAES(EncryptedSecretPart secretPartAES) {
+        this.secretPartAES = secretPartAES;
+    }
+
+    public byte[] getAESkey() {
+        return aESkey;
+    }
+
+    public void setAESkey(byte[] aESkey) {
+        this.aESkey = aESkey;
     }
 }

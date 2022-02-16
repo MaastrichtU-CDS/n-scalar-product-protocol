@@ -20,7 +20,7 @@ public class PerformanceTest {
     //TURN THIS OF WHEN BUILDING
     @Test
     public void testCalculateNPartyScalarProduct() {
-        for (int n = 7; n < 8; n++) {
+        for (int n = 2; n < 4; n++) {
             for (int population = 4000; population < 5001; population += 500) {
                 List<Long> duration = new ArrayList<>();
                 for (int j = 0; j < 100; j++) {

@@ -1,11 +1,15 @@
 package com.florian.nscalarproduct.secret;
 
-import com.florian.nscalarproduct.encryption.Elgamal;
+import com.florian.nscalarproduct.encryption.AES;
+import com.florian.nscalarproduct.encryption.RSA;
 import com.florian.nscalarproduct.station.DataStation;
 import com.florian.nscalarproduct.util.Util;
 import org.junit.jupiter.api.Test;
 
+import javax.crypto.NoSuchPaddingException;
+import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,9 +36,10 @@ public class SecretTest {
         }
         assertEquals(sum, Util.matrixDiagonalMultiplication(diagonals, length));
     }
-
+    
     @Test
-    public void testEncryptingSecret() {
+    public void testEncryptingSecretAES()
+            throws NoSuchPaddingException, NoSuchAlgorithmException, UnsupportedEncodingException {
         List<DataStation> parties = new ArrayList<>();
         int length = 10;
         for (int i = 0; i < length; i++) {
@@ -54,13 +59,15 @@ public class SecretTest {
         List<EncryptedSecretPart> encryptedParts = new ArrayList<>();
         List<SecretPart> decryptedParts = new ArrayList<>();
         for (SecretPart part : secret.getParts()) {
-            Elgamal elgamel = new Elgamal();
-            elgamel.generateKeys();
-            EncryptedSecretPart encrypted = new EncryptedSecretPart(part, elgamel.getPublicKey());
+            AES aes = new AES();
+            EncryptedSecretPart encrypted = new EncryptedSecretPart(part, aes);
             encryptedParts.add(encrypted);
-            SecretPart decrypted = new SecretPart(encrypted, elgamel);
+            RSA rsa = new RSA();
+            RSA rsa2 = new RSA();
+            byte[] key = rsa2.encryptSecretKey(aes.getKey(), rsa.getPublicKey());
+            SecretPart decrypted = new SecretPart(encrypted, rsa, key);
             decryptedParts.add(decrypted);
-            elgamel.encrypt(part.getR());
+            aes.encrypt(part.getR());
             assertEquals(decrypted.getR(), part.getR());
         }
 

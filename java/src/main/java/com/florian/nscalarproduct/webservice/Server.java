@@ -1,5 +1,7 @@
 package com.florian.nscalarproduct.webservice;
 
+import com.florian.nscalarproduct.encryption.AES;
+import com.florian.nscalarproduct.encryption.RSA;
 import com.florian.nscalarproduct.secret.EncryptedSecretPart;
 import com.florian.nscalarproduct.station.DataStation;
 import com.florian.nscalarproduct.station.SecretStation;
@@ -11,7 +13,10 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.web.bind.annotation.*;
 
+import javax.crypto.NoSuchPaddingException;
+import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -135,8 +140,29 @@ public class Server implements ApplicationContextAware {
     @PostMapping ("getSecretPart")
     public SecretPartResponse getSecretPart(@RequestBody GetSecretPartRequest req) {
         SecretPartResponse response = new SecretPartResponse();
-        response.setSecretPart(new EncryptedSecretPart(secretStations.get(req.getId()).getPart(req.getServerId()),
-                                                       req.getPublicKey()));
+
+        AES aes = null;
+        try {
+            aes = new AES();
+        } catch (NoSuchPaddingException e) {
+            e.printStackTrace();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+        RSA rsa = null;
+        try {
+            rsa = new RSA();
+        } catch (NoSuchPaddingException e) {
+            e.printStackTrace();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        response.setAESkey(rsa.encryptSecretKey(aes.getKey(), req.getRsaKey()));
+
+        response.setSecretPartAES(new EncryptedSecretPart(secretStations.get(req.getId()).getPart(req.getServerId()),
+                                                          aes));
         return response;
     }
 

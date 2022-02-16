@@ -1,9 +1,11 @@
 package com.florian.nscalarproduct.secret;
 
-import com.florian.nscalarproduct.encryption.Elgamal;
-import com.florian.nscalarproduct.encryption.EncryptedElgamal;
+import com.florian.nscalarproduct.encryption.AES;
+import com.florian.nscalarproduct.encryption.RSA;
 
+import javax.crypto.NoSuchPaddingException;
 import java.math.BigInteger;
+import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
@@ -15,12 +17,14 @@ public class SecretPart {
     public SecretPart() {
     }
 
-    public SecretPart(EncryptedSecretPart secretPart, Elgamal elgamal) {
+    public SecretPart(EncryptedSecretPart secretPart, RSA rsa, byte[] key)
+            throws NoSuchPaddingException, NoSuchAlgorithmException {
         this.id = secretPart.getId();
-        this.r = elgamal.decrypt(secretPart.getR());
-        EncryptedElgamal[] encryptdDiagonal = secretPart.getDiagonal();
+        AES aes = new AES(rsa.decryptAESKey(key));
+        this.r = aes.decrypt(secretPart.getR());
+        String[] encryptdDiagonal = secretPart.getDiagonal();
         diagonal = new BigInteger[encryptdDiagonal.length];
-        Arrays.stream(encryptdDiagonal).parallel().map(x -> elgamal.decrypt(x))
+        Arrays.stream(encryptdDiagonal).map(x -> aes.decrypt(x))
                 .collect(Collectors.toList()).toArray(diagonal);
     }
 

@@ -1,11 +1,14 @@
 package com.florian.nscalarproduct.webservice;
 
-import com.florian.nscalarproduct.encryption.Elgamal;
+import com.florian.nscalarproduct.encryption.RSA;
 import com.florian.nscalarproduct.secret.SecretPart;
 import com.florian.nscalarproduct.webservice.domain.*;
 import org.springframework.web.client.RestTemplate;
 
+import javax.crypto.NoSuchPaddingException;
+import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
 public class ServerEndpoint {
@@ -32,17 +35,35 @@ public class ServerEndpoint {
         GetSecretPartRequest req = new GetSecretPartRequest();
         req.setId(id);
         req.setServerId(serverId);
-        Elgamal elgamal = new Elgamal();
-        elgamal.generateKeys();
-        req.setPublicKey(elgamal.getPublicKey());
+
+        RSA rsa = null;
+        try {
+            rsa = new RSA();
+        } catch (NoSuchPaddingException e) {
+            e.printStackTrace();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        req.setRsaKey(rsa.getPublicKey());
+
+
         if (testing) {
             SecretPartResponse response = server.getSecretPart(req);
-            return new SecretPart(response.getSecretPart(), elgamal);
+            try {
+                return new SecretPart(response.getSecretPartAES(), rsa, response.getAESkey());
+            } catch (NoSuchPaddingException e) {
+                e.printStackTrace();
+            } catch (NoSuchAlgorithmException e) {
+                e.printStackTrace();
+            }
         } else {
             SecretPartResponse response = REST_TEMPLATE.postForObject(serverUrl + "/getSecretPart", req,
                                                                       SecretPartResponse.class);
-            return new SecretPart(response.getSecretPart(), elgamal);
+            return null;
         }
+        return null;
     }
 
     //For retrieving the local secret from an external source

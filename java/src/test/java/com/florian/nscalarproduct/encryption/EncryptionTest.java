@@ -2,7 +2,10 @@ package com.florian.nscalarproduct.encryption;
 
 import org.junit.jupiter.api.Test;
 
+import javax.crypto.NoSuchPaddingException;
+import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,6 +17,9 @@ public class EncryptionTest {
 
     @Test
     public void testEncryptions() {
+        // comparison of various encrytion schemes performance
+        // AES + RSA is the fastest, however, it cannot be run in parallel.
+        // Under specific conditions Elgamal might become faster because of this
         List<Integer> times = new ArrayList<>();
         for (int j = 0; j < 10000; j++) {
             for (int i = 0; i < 100; i++) {
@@ -21,22 +27,81 @@ public class EncryptionTest {
             }
         }
         long elgamalStart = System.currentTimeMillis();
-        times.parallelStream().forEach(x -> testElgamal(x));
+        Elgamal main = new Elgamal();
+        main.generateKeys();
+        Elgamal second = new Elgamal(main.getPublicKey());
+        times.parallelStream().forEach(x -> testElgamal(x, main, second));
         long elgamalEnd = System.currentTimeMillis();
 
         long paillierStart = System.currentTimeMillis();
-        times.parallelStream().forEach(x -> testPaillier(x));
+        Paillier paillier = new Paillier();
+        paillier.generateKeyPair();
+        times.parallelStream().forEach(x -> testPaillier(x, paillier));
         long paillierEnd = System.currentTimeMillis();
+
+        long aesStart = System.currentTimeMillis();
+        times.parallelStream().forEach(x -> testAES(x));
+        long aesEnd = System.currentTimeMillis();
+
+        long rsaStart = System.currentTimeMillis();
+        testRSA(times);
+        long rsaEnd = System.currentTimeMillis();
 
         System.out.println("Elgamal: " + (elgamalEnd - elgamalStart) + "ms");
         System.out.println("Paillier: " + (paillierEnd - paillierStart) + "ms");
+        System.out.println("AES: " + (aesEnd - aesStart) + "ms");
+        System.out.println("RSA COMBO: " + (rsaEnd - rsaStart) + "ms");
     }
 
-    private void testPaillier(int i) {
+    private void testRSA(List<Integer> times) {
+
+        try {
+            RSA rsa = new RSA();
+            AES aes = new AES();
+
+            byte[] eAES = rsa.encryptSecretKey(aes.getKey());
+            AES aes2 = new AES(rsa.decryptAESKey(eAES));
+            for (int i : times) {
+                BigInteger a = BigInteger.valueOf(2).pow(i);
+                String eA = aes.encrypt(a);
+                assertEquals(a, aes2.decrypt(eA));
+            }
+        } catch (NoSuchPaddingException e) {
+            e.printStackTrace();
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void testAES(int i, AES aes) {
         BigInteger a = BigInteger.valueOf(2).pow(i);
 
-        Paillier paillier = new Paillier();
-        paillier.generateKeyPair();
+        String eA = aes.encrypt(a);
+        assertEquals(aes.decrypt(eA), a);
+    }
+
+    private void testAES(int i) {
+        BigInteger a = BigInteger.valueOf(2).pow(i);
+        try {
+            AES aes = new AES();
+            String eA = aes.encrypt(a);
+            assertEquals(aes.decrypt(eA), a);
+            if (!aes.decrypt(eA).equals(a)) {
+                System.out.println("sad");
+            }
+        } catch (NoSuchPaddingException e) {
+            e.printStackTrace();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void testPaillier(int i, Paillier paillier) {
+        BigInteger a = BigInteger.valueOf(2).pow(i);
+
+
         PublicPaillierKey p = paillier.getPublicKey();
 
         BigInteger eA = p.encrypt(a);
@@ -44,12 +109,8 @@ public class EncryptionTest {
         assertEquals(paillier.decrypt(eA), a);
     }
 
-    private void testElgamal(int i) {
+    private void testElgamal(int i, Elgamal main, Elgamal second) {
         BigInteger a = BigInteger.valueOf(2).pow(i);
-
-        Elgamal main = new Elgamal();
-        main.generateKeys();
-        Elgamal second = new Elgamal(main.getPublicKey());
 
         EncryptedElgamal eA = second.encrypt(a);
 
