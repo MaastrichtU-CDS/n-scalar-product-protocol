@@ -14,3 +14,11 @@ secretServer=<url to the commodity server>
 server.port=<port to be used>
 server=<server id>
 ```
+# Handling decimals
+This implementation works with BigInteger, and thus expects integers as its input.
+If you want to calculate the scalar product protocol of vectors containing decimals the following approach can be used:
+1) Pick a precision, e.g. 5 decimals.
+2) Multiply all decimals by 10^precision, in our example this would be 10^5. This number is your precisionMultiplier
+3) Perform the n-party-scalar-product protocol as normal
+4) Divide the result by precisionMultiplier^n, where n is the number of parties involved in the protocol. This will 
+result in the final result that is accurate up to the selected amount of decimals.

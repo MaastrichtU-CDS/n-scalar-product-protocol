@@ -6,6 +6,7 @@ import com.florian.nscalarproduct.webservice.Server;
 import com.florian.nscalarproduct.webservice.ServerEndpoint;
 import org.junit.jupiter.api.Test;
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
@@ -50,6 +51,53 @@ public class CentralStationTest {
             }
         }
     }
+
+    @Test
+    public void testCalculateNPartyScalarProductDecimalValues() {
+        int precision = 5;
+        for (int n = 2; n < 5; n++) {
+            double multiplier = Math.pow(10, precision);
+            double combinedMultiplier = Math.pow(multiplier, n);
+            //multiplier = precision ^ n
+            for (int population = 2; population < 10; population++) {
+                List<Server> servers = new ArrayList<>();
+                List<ServerEndpoint> endpoints = new ArrayList<>();
+                List<BigDecimal[]> datasets = new ArrayList<>();
+                ;
+                for (int i = 0; i < n; i++) {
+                    BigDecimal[] data = DataStationTest.createDoubleData(population);
+                    BigInteger[] dataIntegers = new BigInteger[population];
+                    for (int j = 0; j < data.length; j++) {
+                        dataIntegers[j] = BigInteger.valueOf(data[j].multiply(new BigDecimal(multiplier)).longValue());
+                    }
+                    Server server = new Server(String.valueOf(i), dataIntegers);
+                    endpoints.add(new ServerEndpoint(server));
+                    servers.add(server);
+                    datasets.add(data);
+                }
+                Server secret = new Server(String.valueOf(n), servers, population);
+                ServerEndpoint secretEndpoint = new ServerEndpoint(secret);
+                CentralStation central = new CentralStation();
+
+                List<ServerEndpoint> all = new ArrayList<>();
+                all.addAll(endpoints);
+                all.add(secretEndpoint);
+                for (Server s : servers) {
+                    s.setEndpoints(all);
+                }
+                secret.setEndpoints(all);
+
+                // calculate expected anwser:
+                BigDecimal expected = Util.matrixDiagonalMultiplicationDecimal(datasets, datasets.get(0).length);
+
+                Protocol prot = new Protocol(endpoints, secretEndpoint, "start");
+                BigInteger result = central.calculateNPartyScalarProduct(prot);
+                BigDecimal resultDec = BigDecimal.valueOf(result.longValue() / combinedMultiplier);
+                assertEquals(expected.longValue(), resultDec.longValue(), Math.pow(10, -precision));
+            }
+        }
+    }
+
 
     @Test
     public void testDetermineSubprotocols() {

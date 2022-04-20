@@ -1,5 +1,6 @@
 package com.florian.nscalarproduct.util;
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.List;
 
@@ -23,6 +24,16 @@ public final class Util {
         }
         return res;
     }
+
+    public static BigDecimal matrixDiagonalMultiplicationDecimal(List<BigDecimal[]> list, int matrixSize) {
+        BigDecimal res = BigDecimal.ZERO;
+        for (int i = 0; i < matrixSize; i++) {
+            final int j = i;
+            res = res.add(list.stream().map(x -> x[j]).reduce(BigDecimal.ONE, BigDecimal::multiply));
+        }
+        return res;
+    }
+
 
     public static BigInteger[] matrixMultiplication(List<BigInteger[]> list) {
         BigInteger[] res = matrixMultiplication(list.get(0), list.get(1));

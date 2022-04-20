@@ -5,6 +5,7 @@ import com.florian.nscalarproduct.secret.SecretPart;
 import com.florian.nscalarproduct.util.Util;
 import org.junit.jupiter.api.Test;
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -80,6 +81,17 @@ public class DataStationTest {
         Random random = new Random();
         for (int i = 0; i < population; i++) {
             data[i] = BigInteger.valueOf(random.nextInt(2));
+        }
+        return data;
+    }
+
+    public static BigDecimal[] createDoubleData(int population) {
+        BigDecimal[] data = new BigDecimal[population];
+
+        BigDecimal[] secretDiagonal = new BigDecimal[population];
+        Random random = new Random();
+        for (int i = 0; i < population; i++) {
+            data[i] = BigDecimal.valueOf(random.nextDouble());
         }
         return data;
     }
