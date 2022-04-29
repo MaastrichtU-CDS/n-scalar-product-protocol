@@ -1,5 +1,7 @@
 package com.florian.nscalarproduct.webservice;
 
+import com.florian.nscalarproduct.data.Attribute;
+import com.florian.nscalarproduct.data.Data;
 import com.florian.nscalarproduct.encryption.AES;
 import com.florian.nscalarproduct.encryption.RSA;
 import com.florian.nscalarproduct.secret.EncryptedSecretPart;
@@ -246,5 +248,25 @@ public class Server implements ApplicationContextAware {
     @Override
     public void setApplicationContext(ApplicationContext ctx) throws BeansException {
         this.context = ctx;
+    }
+
+    public static void checkHorizontalSplit(Data data, BigInteger[] localData) {
+        // utility method to check for horizontal splits in the data
+        // Only used in wrapper projects that utilize n-party-protocol
+        if (data.hasHorizontalSplit()) {
+            // if a horizontal split is present, check if this record is locally present.
+            // if it is not locally present, treat is as if all local attributes are unknown and set localdata to 1
+            // for this record
+            Attribute localPresence = data.getData().get(data.getLocalPresenceColumn()).get(0);
+            AttributeRequirement checkLocalPresence = new AttributeRequirement();
+            checkLocalPresence.setValue(
+                    new Attribute(Attribute.AttributeType.bool, "true", localPresence.getAttributeName()));
+            List<Attribute> present = data.getData().get(data.getLocalPresenceColumn());
+            for (int i = 0; i < localData.length; i++) {
+                if (!checkLocalPresence.checkRequirement(present.get(i))) {
+                    localData[i] = BigInteger.ONE;
+                }
+            }
+        }
     }
 }

@@ -4,17 +4,28 @@ import java.util.*;
 
 public class Data {
 
-    private int idColumn;
+    private int idColumn; //column containing the ID attribute
+    private int localPresenceColumn; // column containing an attribute indicating if a record is locally avalaible
+    // If such a column exists it means there is a horizontal split in the dataset. If there is no such column
+    // this is set to -1;
+
     private List<List<Attribute>> data;
     private HashMap<String, Integer> collumnIds;
 
-
-    public Data(int idColumn, List<List<Attribute>> data) {
+    public Data(int idColumn, int localPresenceColumn, List<List<Attribute>> data) {
         this.data = data;
         initCollumnIds();
         this.idColumn = idColumn;
+        this.localPresenceColumn = localPresenceColumn;
         initIds();
+    }
 
+    public boolean hasHorizontalSplit() {
+        return this.localPresenceColumn >= 0;
+    }
+
+    public int getLocalPresenceColumn() {
+        return localPresenceColumn;
     }
 
     public HashMap<String, Integer> getCollumnIds() {

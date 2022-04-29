@@ -12,6 +12,8 @@ import java.util.List;
 
 
 public final class Parser {
+    private static final String LOCALLY_PRESENT_COLUMN_NAME = "locallyPresent";
+
     private Parser() {
     }
 
@@ -20,6 +22,7 @@ public final class Parser {
         List<String> types = records.get(0);
         List<String> attributes = records.get(1);
         List<List<Attribute>> parsed = new ArrayList<>();
+        int locallyPresentColumn = -1;
 
         for (int i = 0; i < attributes.size(); i++) {
             List<Attribute> attribute = new ArrayList<>();
@@ -28,9 +31,12 @@ public final class Parser {
                                             attributes.get(i)));
             }
             parsed.add(attribute);
+            if (attribute.get(0).getAttributeName().equals(LOCALLY_PRESENT_COLUMN_NAME)) {
+                locallyPresentColumn = i;
+            }
         }
 
-        Data data = new Data(idColumn, parsed);
+        Data data = new Data(idColumn, locallyPresentColumn, parsed);
         return data;
     }
 
