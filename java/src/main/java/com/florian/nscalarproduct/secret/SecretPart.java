@@ -21,10 +21,10 @@ public class SecretPart {
             throws NoSuchPaddingException, NoSuchAlgorithmException {
         this.id = secretPart.getId();
         AES aes = new AES(rsa.decryptAESKey(key));
-        this.r = aes.decrypt(secretPart.getR());
+        this.r = aes.decryptBigInteger(secretPart.getR());
         String[] encryptdDiagonal = secretPart.getDiagonal();
         diagonal = new BigInteger[encryptdDiagonal.length];
-        Arrays.stream(encryptdDiagonal).map(x -> aes.decrypt(x))
+        Arrays.stream(encryptdDiagonal).map(x -> aes.decryptBigInteger(x))
                 .collect(Collectors.toList()).toArray(diagonal);
     }
 

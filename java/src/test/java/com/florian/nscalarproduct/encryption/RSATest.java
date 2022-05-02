@@ -24,7 +24,7 @@ public class RSATest {
 
             BigInteger one = BigInteger.ONE;
             String e = aes.encrypt(one);
-            assertEquals(one, aes2.decrypt(e));
+            assertEquals(one, aes2.decryptBigInteger(e));
         } catch (Exception e) {
             e.printStackTrace();
         }

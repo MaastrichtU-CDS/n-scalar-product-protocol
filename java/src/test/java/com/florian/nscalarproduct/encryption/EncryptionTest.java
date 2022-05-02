@@ -4,10 +4,12 @@ import org.junit.jupiter.api.Test;
 
 import javax.crypto.NoSuchPaddingException;
 import java.io.UnsupportedEncodingException;
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -53,6 +55,24 @@ public class EncryptionTest {
         System.out.println("RSA COMBO: " + (rsaEnd - rsaStart) + "ms");
     }
 
+    @Test
+    public void testAESBigDecimalEncryption() throws NoSuchPaddingException, NoSuchAlgorithmException {
+        // comparison of various encrytion schemes performance
+        // AES + RSA is the fastest, however, it cannot be run in parallel.
+        // Under specific conditions Elgamal might become faster because of this
+        List<BigDecimal> values = new ArrayList<>();
+        Random r = new Random();
+        for (int j = 0; j < 10000; j++) {
+            values.add(BigDecimal.valueOf(r.nextDouble()));
+        }
+        AES aes = new AES();
+        for (BigDecimal d : values) {
+            String encrypted = aes.encrypt(d);
+            assertEquals(d, aes.decryptBigDecimal(encrypted));
+        }
+
+    }
+
     private void testRSA(List<Integer> times) {
 
         try {
@@ -64,7 +84,7 @@ public class EncryptionTest {
             for (int i : times) {
                 BigInteger a = BigInteger.valueOf(2).pow(i);
                 String eA = aes.encrypt(a);
-                assertEquals(a, aes2.decrypt(eA));
+                assertEquals(a, aes2.decryptBigInteger(eA));
             }
         } catch (NoSuchPaddingException e) {
             e.printStackTrace();
@@ -79,7 +99,7 @@ public class EncryptionTest {
         BigInteger a = BigInteger.valueOf(2).pow(i);
 
         String eA = aes.encrypt(a);
-        assertEquals(aes.decrypt(eA), a);
+        assertEquals(aes.decryptBigInteger(eA), a);
     }
 
     private void testAES(int i) {
@@ -87,10 +107,7 @@ public class EncryptionTest {
         try {
             AES aes = new AES();
             String eA = aes.encrypt(a);
-            assertEquals(aes.decrypt(eA), a);
-            if (!aes.decrypt(eA).equals(a)) {
-                System.out.println("sad");
-            }
+            assertEquals(aes.decryptBigInteger(eA), a);
         } catch (NoSuchPaddingException e) {
             e.printStackTrace();
         } catch (NoSuchAlgorithmException e) {
