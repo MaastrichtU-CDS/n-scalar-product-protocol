@@ -87,8 +87,6 @@ public class Attribute implements Comparable<Attribute> {
                 b = Double.parseDouble(attribute.getValue());
             }
             return Double.compare(a, b);
-
-
         }
         //should never come here, but java wants it
         return 0;
