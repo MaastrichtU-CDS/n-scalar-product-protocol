@@ -1,10 +1,8 @@
 package com.florian.nscalarproduct.webservice.domain;
 
-import java.security.PublicKey;
-
 public class GetSecretPartRequest extends NPartyRequest {
     private String serverId;
-    private PublicKey rsaKey;
+    private byte[] rsaKey;
 
     public GetSecretPartRequest() {
     }
@@ -18,11 +16,11 @@ public class GetSecretPartRequest extends NPartyRequest {
         this.serverId = serverId;
     }
 
-    public PublicKey getRsaKey() {
+    public byte[] getRsaKey() {
         return rsaKey;
     }
 
-    public void setRsaKey(PublicKey rsaKey) {
+    public void setRsaKey(byte[] rsaKey) {
         this.rsaKey = rsaKey;
     }
 }

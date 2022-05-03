@@ -18,7 +18,11 @@ import org.springframework.web.bind.annotation.*;
 import javax.crypto.NoSuchPaddingException;
 import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
+import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;
+import java.security.PublicKey;
+import java.security.spec.InvalidKeySpecException;
+import java.security.spec.X509EncodedKeySpec;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -140,7 +144,8 @@ public class Server implements ApplicationContextAware {
 
     //For sharing local secret externally
     @PostMapping ("getSecretPart")
-    public SecretPartResponse getSecretPart(@RequestBody GetSecretPartRequest req) {
+    public SecretPartResponse getSecretPart(@RequestBody GetSecretPartRequest req)
+            throws NoSuchAlgorithmException, InvalidKeySpecException {
         SecretPartResponse response = new SecretPartResponse();
 
         AES aes = null;
@@ -161,7 +166,10 @@ public class Server implements ApplicationContextAware {
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
-        response.setAESkey(rsa.encryptSecretKey(aes.getKey(), req.getRsaKey()));
+        X509EncodedKeySpec keySpec = new X509EncodedKeySpec(req.getRsaKey());
+        KeyFactory keyFactory = KeyFactory.getInstance("RSA");
+        PublicKey pubKey = keyFactory.generatePublic(keySpec);
+        response.setAESkey(rsa.encryptSecretKey(aes.getKey(), pubKey));
 
         response.setSecretPartAES(new EncryptedSecretPart(secretStations.get(req.getId()).getPart(req.getServerId()),
                                                           aes));
@@ -172,10 +180,19 @@ public class Server implements ApplicationContextAware {
     //For retrieving the local secret from an external source
     @PutMapping ("retrieveSecret")
     public void retrieveSecret(@RequestBody RetrieveSecretRequest req) {
-        endpoints.parallelStream().forEach(x -> retrieveSecret(req, x));
+        endpoints.parallelStream().forEach(x -> {
+            try {
+                retrieveSecret(req, x);
+            } catch (NoSuchAlgorithmException e) {
+                e.printStackTrace();
+            } catch (InvalidKeySpecException e) {
+                e.printStackTrace();
+            }
+        });
     }
 
-    private boolean retrieveSecret(RetrieveSecretRequest req, ServerEndpoint end) {
+    private boolean retrieveSecret(RetrieveSecretRequest req, ServerEndpoint end)
+            throws NoSuchAlgorithmException, InvalidKeySpecException {
         if (end.getServerId().equals(req.getSource())) {
             if (end.getSecretPart(req.getId(), serverId) == null) {
                 return true;

@@ -9,6 +9,7 @@ import javax.crypto.NoSuchPaddingException;
 import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
 import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 import java.util.List;
 
 public class ServerEndpoint {
@@ -31,7 +32,8 @@ public class ServerEndpoint {
     }
 
     //For sharing local secret externally
-    public SecretPart getSecretPart(String id, String serverId) {
+    public SecretPart getSecretPart(String id, String serverId)
+            throws NoSuchAlgorithmException, InvalidKeySpecException {
         GetSecretPartRequest req = new GetSecretPartRequest();
         req.setId(id);
         req.setServerId(serverId);
@@ -46,7 +48,7 @@ public class ServerEndpoint {
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
-        req.setRsaKey(rsa.getPublicKey());
+        req.setRsaKey(rsa.getPublicKey().getEncoded());
 
 
         if (testing) {
