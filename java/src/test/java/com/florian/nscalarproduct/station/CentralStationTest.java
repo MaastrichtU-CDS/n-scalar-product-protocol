@@ -56,7 +56,7 @@ public class CentralStationTest {
     public void testCalculateNPartyScalarProductDecimalValues() {
         int precision = 5;
         for (int n = 2; n < 5; n++) {
-            double multiplier = Math.pow(10, precision);
+            double multiplier = Math.pow(10, precision + 1);
             double combinedMultiplier = Math.pow(multiplier, n);
             //multiplier = precision ^ n
             for (int population = 2; population < 10; population++) {
@@ -92,8 +92,11 @@ public class CentralStationTest {
 
                 Protocol prot = new Protocol(endpoints, secretEndpoint, "start");
                 BigInteger result = central.calculateNPartyScalarProduct(prot);
-                BigDecimal resultDec = BigDecimal.valueOf(result.longValue() / combinedMultiplier);
-                assertEquals(expected.longValue(), resultDec.longValue(), Math.pow(10, -precision));
+                BigDecimal resultDec = new BigDecimal(result.toString()).divide(BigDecimal.valueOf(combinedMultiplier));
+
+                //Check if the difference between expected and result is small enough
+                //Do not directly check double and long values cuz there's weird stuff that can happen there
+                assertEquals(0, resultDec.subtract(expected).doubleValue(), Math.pow(10, -precision));
             }
         }
     }
