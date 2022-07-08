@@ -56,7 +56,7 @@ public class CentralStationTest {
     public void testCalculateNPartyScalarProductDecimalValues() {
         int precision = 5;
         for (int n = 2; n < 5; n++) {
-            double multiplier = Math.pow(10, precision + 1);
+            double multiplier = Math.pow(10, precision);
             double combinedMultiplier = Math.pow(multiplier, n);
             //multiplier = precision ^ n
             for (int population = 2; population < 10; population++) {
@@ -65,7 +65,7 @@ public class CentralStationTest {
                 List<BigDecimal[]> datasets = new ArrayList<>();
                 ;
                 for (int i = 0; i < n; i++) {
-                    BigDecimal[] data = DataStationTest.createDoubleData(population);
+                    BigDecimal[] data = DataStationTest.createDoubleData(precision, population);
                     BigInteger[] dataIntegers = new BigInteger[population];
                     for (int j = 0; j < data.length; j++) {
                         dataIntegers[j] = BigInteger.valueOf(data[j].multiply(new BigDecimal(multiplier)).longValue());
