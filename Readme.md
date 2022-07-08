@@ -18,8 +18,10 @@ server=<server id>
 This implementation works with BigInteger, and thus expects integers as its input.
 If you want to calculate the scalar product protocol of vectors containing decimal-values the following approach can be used:
 1) Pick a precision, e.g. 5 decimals.
-2) Create your precisionMultiplier by calculating 10^precision, in our example this would be 10^5. 
+2) Create your precisionMultiplier by calculating 10^precision +1, in our example this would be 10^6. 
 3) Multiply all your data by your precisionMultiplier & then round these numbers to the nearest integer
+
+    **It is important to ensure that your data is rounded properly with no trailing values after your defined precision. Trailing values can result in rounding errors which reduce the precision**
 4) Perform the n-party-scalar-product protocol as normal on these large integers
 5) Divide the result by precisionMultiplier^n, where n is the number of parties involved in the protocol that contain decimal values. This will 
 result in the final result that is accurate up to the selected amount of decimals.

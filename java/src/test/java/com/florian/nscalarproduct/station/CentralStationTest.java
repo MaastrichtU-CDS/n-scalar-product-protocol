@@ -65,7 +65,7 @@ public class CentralStationTest {
                 List<BigDecimal[]> datasets = new ArrayList<>();
                 ;
                 for (int i = 0; i < n; i++) {
-                    BigDecimal[] data = DataStationTest.createDoubleData(population);
+                    BigDecimal[] data = DataStationTest.createDoubleData(precision, population);
                     BigInteger[] dataIntegers = new BigInteger[population];
                     for (int j = 0; j < data.length; j++) {
                         dataIntegers[j] = BigInteger.valueOf(data[j].multiply(new BigDecimal(multiplier)).longValue());
@@ -92,8 +92,11 @@ public class CentralStationTest {
 
                 Protocol prot = new Protocol(endpoints, secretEndpoint, "start");
                 BigInteger result = central.calculateNPartyScalarProduct(prot);
-                BigDecimal resultDec = BigDecimal.valueOf(result.longValue() / combinedMultiplier);
-                assertEquals(expected.longValue(), resultDec.longValue(), Math.pow(10, -precision));
+                BigDecimal resultDec = new BigDecimal(result.toString()).divide(BigDecimal.valueOf(combinedMultiplier));
+
+                //Check if the difference between expected and result is small enough
+                //Do not directly check double and long values cuz there's weird stuff that can happen there
+                assertEquals(0, resultDec.subtract(expected).doubleValue(), Math.pow(10, -precision));
             }
         }
     }

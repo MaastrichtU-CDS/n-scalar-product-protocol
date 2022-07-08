@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -85,13 +86,14 @@ public class DataStationTest {
         return data;
     }
 
-    public static BigDecimal[] createDoubleData(int population) {
+    public static BigDecimal[] createDoubleData(int precision, int population) {
         BigDecimal[] data = new BigDecimal[population];
 
         BigDecimal[] secretDiagonal = new BigDecimal[population];
         Random random = new Random();
         for (int i = 0; i < population; i++) {
-            data[i] = BigDecimal.valueOf(random.nextDouble());
+            data[i] = BigDecimal.valueOf(random.nextDouble()).setScale(precision, RoundingMode.HALF_UP);
+
         }
         return data;
     }
