@@ -5,8 +5,6 @@ import com.florian.nscalarproduct.secret.SecretPart;
 import com.florian.nscalarproduct.webservice.domain.*;
 import org.springframework.web.client.RestTemplate;
 
-import javax.crypto.NoSuchPaddingException;
-import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
@@ -41,11 +39,7 @@ public class ServerEndpoint {
         RSA rsa = null;
         try {
             rsa = new RSA();
-        } catch (NoSuchPaddingException e) {
-            e.printStackTrace();
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        } catch (UnsupportedEncodingException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         req.setRsaKey(rsa.getPublicKey().getEncoded());
@@ -55,9 +49,7 @@ public class ServerEndpoint {
             SecretPartResponse response = server.getSecretPart(req);
             try {
                 return new SecretPart(response.getSecretPartAES(), rsa, response.getAESkey());
-            } catch (NoSuchPaddingException e) {
-                e.printStackTrace();
-            } catch (NoSuchAlgorithmException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         } else {
@@ -65,9 +57,7 @@ public class ServerEndpoint {
                                                                       SecretPartResponse.class);
             try {
                 return new SecretPart(response.getSecretPartAES(), rsa, response.getAESkey());
-            } catch (NoSuchPaddingException e) {
-                e.printStackTrace();
-            } catch (NoSuchAlgorithmException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
