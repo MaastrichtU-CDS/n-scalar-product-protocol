@@ -63,7 +63,13 @@ public class ServerEndpoint {
         } else {
             SecretPartResponse response = REST_TEMPLATE.postForObject(serverUrl + "/getSecretPart", req,
                                                                       SecretPartResponse.class);
-            return null;
+            try {
+                return new SecretPart(response.getSecretPartAES(), rsa, response.getAESkey());
+            } catch (NoSuchPaddingException e) {
+                e.printStackTrace();
+            } catch (NoSuchAlgorithmException e) {
+                e.printStackTrace();
+            }
         }
         return null;
     }
