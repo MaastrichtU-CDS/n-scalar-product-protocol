@@ -1,6 +1,8 @@
 package com.florian.nscalarproduct.notunittests.performance;
 
 
+import com.florian.nscalarproduct.encryption.Elgamal;
+import com.florian.nscalarproduct.encryption.EncryptedElgamal;
 import com.florian.nscalarproduct.station.CentralStation;
 import com.florian.nscalarproduct.webservice.Protocol;
 import com.florian.nscalarproduct.webservice.Server;
@@ -16,6 +18,68 @@ import static com.florian.nscalarproduct.station.DataStationTest.createData;
 
 
 public class PerformanceTest {
+
+    @Test
+    public void compareEncryptionVsSSP() {
+        //with reltative small populations and high n Encryption is faster
+        //With relative large populations and low n SSP is faster
+        //E.g. 10 individuals n = 2 encryption is faster
+        // 10000 individuals, n = 2, SSP is faster
+        // 10000 individuals n= 4 encryption is faster again
+        int population = 10000;
+        int n = 2;
+        List<Server> servers = new ArrayList<>();
+        List<ServerEndpoint> endpoints = new ArrayList<>();
+        List<BigInteger[]> datasets = new ArrayList<>();
+
+        for (int i = 0; i < n; i++) {
+            BigInteger[] data = createData(population);
+            for (int j = 0; j < data.length; j++) {
+                data[j] = data[j].add(BigInteger.ONE);
+            }
+            Server server = new Server(String.valueOf(i), data);
+            endpoints.add(new ServerEndpoint(server));
+            servers.add(server);
+            datasets.add(data);
+        }
+
+        Server secret = new Server(String.valueOf(n), servers, population);
+        ServerEndpoint secretEndpoint = new ServerEndpoint(secret);
+        CentralStation central = new CentralStation();
+
+        List<ServerEndpoint> all = new ArrayList<>();
+        all.addAll(endpoints);
+        all.add(secretEndpoint);
+        for (Server s : servers) {
+            s.setEndpoints(all);
+        }
+        secret.setEndpoints(all);
+
+        Protocol prot = new Protocol(endpoints, secretEndpoint, "start");
+        long start = System.currentTimeMillis();
+        BigInteger result = central.calculateNPartyScalarProduct(prot);
+        long end = System.currentTimeMillis();
+        System.out.println("Scalar product time: " + (end - start));
+
+        Elgamal main = new Elgamal();
+        main.generateKeys();
+        Elgamal second = new Elgamal(main.getPublicKey());
+        start = System.currentTimeMillis();
+        BigInteger res = BigInteger.ZERO;
+        for (int i = 0; i < population; i++) {
+            EncryptedElgamal temp = main.encrypt(BigInteger.ONE);
+            for (int j = 0; j < datasets.size(); j++) {
+                EncryptedElgamal eB = second.encrypt(datasets.get(j)[i]);
+                temp = EncryptedElgamal.multiply(temp, eB);
+            }
+            res = res.add(main.decrypt(temp));
+        }
+        end = System.currentTimeMillis();
+        System.out.println("Encrypted time: " + (end - start));
+        System.out.println(res + " " + result);
+
+    }
+
 
     //TURN THIS OF WHEN BUILDING
     @Test
