@@ -87,7 +87,13 @@ public class Attribute implements Comparable<Attribute> {
             } else {
                 a = Double.parseDouble(value);
             }
-            b = Double.parseDouble(attribute.getValue());
+            if (attribute.getValue().equals(INFINITY)) {
+                return -1;
+            } else if (attribute.getValue().equals(MINUS_INFINITY)) {
+                return 1;
+            } else {
+                b = Double.parseDouble(attribute.getValue());
+            }
             return Double.compare(a, b);
         }
         //should never come here, but java wants it
