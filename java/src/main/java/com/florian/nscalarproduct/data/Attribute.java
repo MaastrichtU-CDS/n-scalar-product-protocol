@@ -73,19 +73,21 @@ public class Attribute implements Comparable<Attribute> {
             Double a = 0.0;
             Double b = 0.0;
             if (value.equals(INFINITY)) {
-                a = Double.MAX_VALUE;
+                if (attribute.getValue().equals(INFINITY)) {
+                    return 0;
+                } else {
+                    return 1;
+                }
             } else if (value.equals(MINUS_INFINITY)) {
-                a = Double.MIN_VALUE;
+                if (attribute.getValue().equals(MINUS_INFINITY)) {
+                    return 0;
+                } else {
+                    return -1;
+                }
             } else {
                 a = Double.parseDouble(value);
             }
-            if (attribute.getValue().equals(INFINITY)) {
-                b = Double.MAX_VALUE;
-            } else if (attribute.getValue().equals(MINUS_INFINITY)) {
-                b = Double.MIN_VALUE;
-            } else {
-                b = Double.parseDouble(attribute.getValue());
-            }
+            b = Double.parseDouble(attribute.getValue());
             return Double.compare(a, b);
         }
         //should never come here, but java wants it

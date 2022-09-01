@@ -76,4 +76,21 @@ public class AttributeRequirementTest {
         assertFalse(unknownR.checkRequirement(a));
         assertTrue(unknownR.checkRequirement(unknown));
     }
+
+    @Test
+    public void testInfinities() {
+        Attribute upperLimit = new Attribute(Attribute.AttributeType.numeric, "inf", "upperLimit");
+        Attribute lowerLimit = new Attribute(Attribute.AttributeType.numeric, "-inf", "upperLimit");
+        Attribute zero = new Attribute(Attribute.AttributeType.numeric, "0", "zero");
+        Attribute one = new Attribute(Attribute.AttributeType.numeric, "1", "value");
+
+        AttributeRequirement negativeInf = new AttributeRequirement(lowerLimit, one);
+        AttributeRequirement positiveINf = new AttributeRequirement(zero, upperLimit);
+        AttributeRequirement inf = new AttributeRequirement(lowerLimit, upperLimit);
+
+        assertTrue(negativeInf.checkRequirement(zero));
+        assertTrue(positiveINf.checkRequirement(one));
+        assertTrue(inf.checkRequirement(zero));
+        assertTrue(inf.checkRequirement(one));
+    }
 }
