@@ -18,6 +18,7 @@ public class DataStation extends Station {
     private BigInteger v2;
 
     private static final int MAX = 10;
+    private static final int TEN = 10;
 
 
     public DataStation(String id, BigInteger[] localData) {
@@ -35,10 +36,11 @@ public class DataStation extends Station {
     public void setLocalSecret(SecretPart secret) {
         this.secret = secret;
         obfuscated = new BigInteger[localData.length];
-        BigInteger[] secretMatrix = secret.getDiagonal();
+        BigInteger[] secretMatrix = this.secret.getDiagonal();
         for (int i = 0; i < localData.length; i++) {
             obfuscated[i] = localData[i].add(secretMatrix[i]);
         }
+
     }
 
     public BigInteger localCalculationFirstParty(List<BigInteger[]> obfuscated) {

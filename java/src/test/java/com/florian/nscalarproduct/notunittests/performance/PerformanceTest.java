@@ -18,6 +18,7 @@ import static com.florian.nscalarproduct.station.DataStationTest.createData;
 
 
 public class PerformanceTest {
+    private int precision = 0;
 
     @Test
     public void compareEncryptionVsSSP() {
@@ -43,7 +44,7 @@ public class PerformanceTest {
             datasets.add(data);
         }
 
-        Server secret = new Server(String.valueOf(n), servers, population);
+        Server secret = new Server(String.valueOf(n), servers, population, precision);
         ServerEndpoint secretEndpoint = new ServerEndpoint(secret);
         CentralStation central = new CentralStation();
 
@@ -55,7 +56,7 @@ public class PerformanceTest {
         }
         secret.setEndpoints(all);
 
-        Protocol prot = new Protocol(endpoints, secretEndpoint, "start");
+        Protocol prot = new Protocol(endpoints, secretEndpoint, "start", precision);
         long start = System.currentTimeMillis();
         BigInteger result = central.calculateNPartyScalarProduct(prot);
         long end = System.currentTimeMillis();
@@ -84,6 +85,7 @@ public class PerformanceTest {
     //TURN THIS OF WHEN BUILDING
     @Test
     public void testCalculateNPartyScalarProduct() {
+        int precision = 0;
         for (int n = 2; n < 4; n++) {
             for (int population = 4000; population < 5001; population += 500) {
                 List<Long> duration = new ArrayList<>();
@@ -99,7 +101,7 @@ public class PerformanceTest {
                         servers.add(server);
                         datasets.add(data);
                     }
-                    Server secret = new Server(String.valueOf(n), servers, population);
+                    Server secret = new Server(String.valueOf(n), servers, population, precision);
                     ServerEndpoint secretEndpoint = new ServerEndpoint(secret);
                     CentralStation central = new CentralStation();
 
@@ -111,7 +113,7 @@ public class PerformanceTest {
                     }
                     secret.setEndpoints(all);
 
-                    Protocol prot = new Protocol(endpoints, secretEndpoint, "start");
+                    Protocol prot = new Protocol(endpoints, secretEndpoint, "start", precision);
                     long start = System.currentTimeMillis();
                     BigInteger result = central.calculateNPartyScalarProduct(prot);
                     long end = System.currentTimeMillis();

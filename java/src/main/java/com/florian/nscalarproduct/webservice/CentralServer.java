@@ -3,6 +3,7 @@ package com.florian.nscalarproduct.webservice;
 import com.florian.nscalarproduct.station.CentralStation;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
@@ -20,7 +21,7 @@ public class CentralServer {
     protected String secretServer;
 
     @GetMapping ("nparty")
-    public BigInteger nParty() {
+    public BigInteger nParty(@RequestBody int precision) {
         //Starting point, this can be called on the central node in vantage6
         //this is just an example, actual use might need to use their own implementation due to how the secret should be
         //initialized
@@ -39,7 +40,7 @@ public class CentralServer {
 
         CentralStation station = new CentralStation();
 
-        Protocol prot = new Protocol(endpoints, secret, "start");
+        Protocol prot = new Protocol(endpoints, secret, "start", precision);
         return station.calculateNPartyScalarProduct(prot);
     }
 

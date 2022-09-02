@@ -14,6 +14,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class CentralStationTest {
+    int precision = 0;
 
     @Test
     public void testCalculateNPartyScalarProduct() {
@@ -30,7 +31,7 @@ public class CentralStationTest {
                     servers.add(server);
                     datasets.add(data);
                 }
-                Server secret = new Server(String.valueOf(n), servers, population);
+                Server secret = new Server(String.valueOf(n), servers, population, precision);
                 ServerEndpoint secretEndpoint = new ServerEndpoint(secret);
                 CentralStation central = new CentralStation();
 
@@ -45,7 +46,7 @@ public class CentralStationTest {
                 // calculate expected anwser:
                 BigInteger expected = Util.matrixDiagonalMultiplication(datasets, datasets.get(0).length);
 
-                Protocol prot = new Protocol(endpoints, secretEndpoint, "start");
+                Protocol prot = new Protocol(endpoints, secretEndpoint, "start", precision);
                 BigInteger result = central.calculateNPartyScalarProduct(prot);
                 assertEquals(expected, result);
             }
@@ -68,14 +69,15 @@ public class CentralStationTest {
                     BigDecimal[] data = DataStationTest.createDoubleData(precision, population);
                     BigInteger[] dataIntegers = new BigInteger[population];
                     for (int j = 0; j < data.length; j++) {
-                        dataIntegers[j] = BigInteger.valueOf(data[j].multiply(new BigDecimal(multiplier)).longValue());
+                        dataIntegers[j] = BigInteger.valueOf(
+                                data[j].multiply(new BigDecimal(multiplier)).longValue());
                     }
                     Server server = new Server(String.valueOf(i), dataIntegers);
                     endpoints.add(new ServerEndpoint(server));
                     servers.add(server);
                     datasets.add(data);
                 }
-                Server secret = new Server(String.valueOf(n), servers, population);
+                Server secret = new Server(String.valueOf(n), servers, population, precision);
                 ServerEndpoint secretEndpoint = new ServerEndpoint(secret);
                 CentralStation central = new CentralStation();
 
@@ -90,15 +92,17 @@ public class CentralStationTest {
                 // calculate expected anwser:
                 BigDecimal expected = Util.matrixDiagonalMultiplicationDecimal(datasets, datasets.get(0).length);
 
-                Protocol prot = new Protocol(endpoints, secretEndpoint, "start");
+                Protocol prot = new Protocol(endpoints, secretEndpoint, "start", precision);
                 BigInteger result = central.calculateNPartyScalarProduct(prot);
-                BigDecimal resultDec = new BigDecimal(result.toString()).divide(BigDecimal.valueOf(combinedMultiplier));
+                BigDecimal resultDec = new BigDecimal(result.toString()).divide(
+                        BigDecimal.valueOf(combinedMultiplier));
 
                 //Check if the difference between expected and result is small enough
                 //Do not directly check double and long values cuz there's weird stuff that can happen there
                 assertEquals(0, resultDec.subtract(expected).doubleValue(), Math.pow(10, -precision));
             }
         }
+
     }
 
 
@@ -116,7 +120,7 @@ public class CentralStationTest {
                 servers.add(server);
                 datasets.add(data);
             }
-            Server secret = new Server(String.valueOf(population), servers, population);
+            Server secret = new Server(String.valueOf(population), servers, population, precision);
             ServerEndpoint secretEndpoint = new ServerEndpoint(secret);
             CentralStation central = new CentralStation();
 
@@ -128,7 +132,7 @@ public class CentralStationTest {
             }
             secret.setEndpoints(all);
 
-            List<Protocol> subprotocols = central.determineSubprotocols(endpoints, secretEndpoint, "start");
+            List<Protocol> subprotocols = central.determineSubprotocols(endpoints, secretEndpoint, "start", precision);
             assertEquals(subprotocols.size(), calculateExpectedCombinations(population).longValue());
         }
     }
@@ -152,7 +156,7 @@ public class CentralStationTest {
                 datasets.add(data);
             }
 
-            Server secret = new Server(String.valueOf(n), servers, n);
+            Server secret = new Server(String.valueOf(n), servers, n, precision);
             ServerEndpoint secretEndpoint = new ServerEndpoint(secret);
 
             List<ServerEndpoint> all = new ArrayList<>();
@@ -173,7 +177,7 @@ public class CentralStationTest {
     private void determineSubProtocols(List<ServerEndpoint> servers, ServerEndpoint
             secretServer, String source, Res r) {
         CentralStation central = new CentralStation();
-        List<Protocol> subprotocols = central.determineSubprotocols(servers, secretServer, source);
+        List<Protocol> subprotocols = central.determineSubprotocols(servers, secretServer, source, precision);
         for (Protocol p : subprotocols) {
             r.protocols++;
             r.messages += calMessages(p.getServers().size());

@@ -11,6 +11,7 @@ import java.util.Random;
 public class Secret {
     private SecretPart[] parts;
     private static final int MAX = 512;
+    private static final int TEN = 10;
 
     public Secret(SecretPart[] parts) {
         this.parts = parts;
@@ -20,7 +21,7 @@ public class Secret {
         return parts;
     }
 
-    public static Secret generateSecret(List<DataStation> parties) {
+    public static Secret generateSecret(List<DataStation> parties, int precision) {
         List<BigInteger[]> diagonals = new ArrayList<>();
         int length = parties.get(0).getPopulation();
         int size = parties.size();
@@ -58,11 +59,12 @@ public class Secret {
         SecretPart[] parts = new SecretPart[size];
         for (int i = 0; i < size; i++) {
             parts[i] = new SecretPart(diagonals.get(i), rs.get(i), parties.get(i).getId());
+            setPrecision(parts[i], precision, size);
         }
         return new Secret(parts);
     }
 
-    public static Secret generateSecret(List<String> serverIds, int length) {
+    public static Secret generateSecret(List<String> serverIds, int length, int precision) {
         List<BigInteger[]> diagonals = new ArrayList<>();
         int size = serverIds.size();
         Random random = new Random();
@@ -99,7 +101,16 @@ public class Secret {
         SecretPart[] parts = new SecretPart[size];
         for (int i = 0; i < size; i++) {
             parts[i] = new SecretPart(diagonals.get(i), rs.get(i), serverIds.get(i));
+            setPrecision(parts[i], precision, size);
         }
         return new Secret(parts);
+    }
+
+    private static void setPrecision(SecretPart part, int precision, int size) {
+        BigInteger mulitplier = BigInteger.valueOf(TEN).pow(precision);
+        for (int i = 0; i < part.getDiagonal().length; i++) {
+            part.getDiagonal()[i] = part.getDiagonal()[i].multiply(mulitplier);
+        }
+        part.setR(part.getR().multiply(mulitplier.pow(size)));
     }
 }

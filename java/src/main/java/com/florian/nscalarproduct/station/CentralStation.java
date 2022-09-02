@@ -38,7 +38,7 @@ public class CentralStation {
                                       .reduce(BigInteger.ZERO, BigInteger::add));
 
         // determine subprotocols
-        List<Protocol> subprotocols = determineSubprotocols(servers, secretServer, id);
+        List<Protocol> subprotocols = determineSubprotocols(servers, secretServer, id, prot.getPrecision());
         /*
          run subprotocols and add results
          It should be possible to parallelize this, butwith the server setup java gets confused and starts throwing
@@ -53,7 +53,7 @@ public class CentralStation {
     }
 
     public List<Protocol> determineSubprotocols(List<ServerEndpoint> servers, ServerEndpoint
-            secretServer, String source) {
+            secretServer, String source, int precision) {
         // determine Ra combinations:
         int n = servers.size();
         List<Protocol> subProtocols = new ArrayList<>();
@@ -103,7 +103,7 @@ public class CentralStation {
                 }
                 secretServer.addDataFromSecret(newId, source, ids);
                 subprotocol.add(secretServer);
-                subProtocols.add(new Protocol(subprotocol, selected, newId));
+                subProtocols.add(new Protocol(subprotocol, selected, newId, precision));
             }
         }
         return subProtocols;
