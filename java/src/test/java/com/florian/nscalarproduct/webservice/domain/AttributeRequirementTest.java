@@ -92,5 +92,13 @@ public class AttributeRequirementTest {
         assertTrue(positiveINf.checkRequirement(one));
         assertTrue(inf.checkRequirement(zero));
         assertTrue(inf.checkRequirement(one));
+
+        assertTrue(inf.checkRequirement(upperLimit));
+        assertTrue(inf.checkRequirement(lowerLimit));
+        assertTrue(negativeInf.checkRequirement(lowerLimit));
+        assertTrue(positiveINf.checkRequirement(upperLimit));
+
+        assertFalse(negativeInf.checkRequirement(upperLimit));
+        assertFalse(positiveINf.checkRequirement(lowerLimit));
     }
 }

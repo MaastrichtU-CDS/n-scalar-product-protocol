@@ -73,11 +73,9 @@ public class Attribute implements Comparable<Attribute> {
             Double a = 0.0;
             Double b = 0.0;
             if (value.equals(INFINITY)) {
-                if (attribute.getValue().equals(INFINITY)) {
-                    return 0;
-                } else {
-                    return 1;
-                }
+                //Everything is smaller if the value you compare it to is infinity
+                //so return 1
+                return 1;
             } else if (value.equals(MINUS_INFINITY)) {
                 if (attribute.getValue().equals(MINUS_INFINITY)) {
                     return 0;
@@ -88,6 +86,8 @@ public class Attribute implements Comparable<Attribute> {
                 a = Double.parseDouble(value);
             }
             if (attribute.getValue().equals(INFINITY)) {
+                //If you get here then value is less than infinity, so attribute is bigger
+                //so return -1
                 return -1;
             } else if (attribute.getValue().equals(MINUS_INFINITY)) {
                 return 1;
