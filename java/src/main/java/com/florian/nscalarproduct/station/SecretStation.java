@@ -14,8 +14,8 @@ public class SecretStation extends Station {
     public SecretStation() {
     }
 
-    public SecretStation(List<String> serverIds, int length) {
-        this.secret = Secret.generateSecret(serverIds, length);
+    public SecretStation(List<String> serverIds, int length, int precision) {
+        this.secret = Secret.generateSecret(serverIds, length, precision);
     }
 
     public SecretPart getPart(String id) {
@@ -25,17 +25,6 @@ public class SecretStation extends Station {
             }
         }
         return null;
-    }
-
-    public void shareSecret(List<DataStation> parties) {
-        this.secret = Secret.generateSecret(parties);
-        for (DataStation station : parties) {
-            for (SecretPart part : secret.getParts()) {
-                if (part.getId().equals(station.getId())) {
-                    station.setLocalSecret(part);
-                }
-            }
-        }
     }
 
     public DataStation generateDataStation(List<String> subset) {

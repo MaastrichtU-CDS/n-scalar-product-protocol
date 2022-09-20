@@ -17,7 +17,7 @@ public class ServerTest {
             //who cares
         }
         try {
-            server.initRandom(3);
+            server.initRandom(3, 2);
         } catch (Exception e) {
             //who cares
         }

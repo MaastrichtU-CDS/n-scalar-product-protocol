@@ -20,7 +20,7 @@ public class Attribute implements Comparable<Attribute> {
         this.attributeName = attributeName;
     }
 
-    public boolean isUknown() {
+    public boolean isUnknown() {
         return this.value.equals("?");
     }
 
@@ -58,7 +58,7 @@ public class Attribute implements Comparable<Attribute> {
 
     @Override
     public int compareTo(Attribute attribute) {
-        if (this.isUknown() || attribute.isUknown()) {
+        if (this.isUnknown() || attribute.isUnknown()) {
             // Only equal if both are missing values
             return value.equals(attribute.getValue()) ? 0 : 1;
         } else if (this.isAll() || attribute.isAll()) {

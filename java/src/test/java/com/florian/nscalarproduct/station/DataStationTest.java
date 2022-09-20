@@ -18,6 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class DataStationTest {
     private final int POPUlATION = 10;
+    private int precision = 0;
 
     @Test
     public void test2PartyCalculation() {
@@ -27,7 +28,7 @@ public class DataStationTest {
         BigInteger[] B_data = createData(POPUlATION);
         DataStation stationB = new DataStation("2", B_data);
 
-        Secret secret = generateSecret(Arrays.asList(stationA, stationB));
+        Secret secret = generateSecret(Arrays.asList(stationA, stationB), precision);
 
         stationA.setLocalSecret(secret.getParts()[0]);
         stationB.setLocalSecret(secret.getParts()[1]);
@@ -60,7 +61,7 @@ public class DataStationTest {
         BigInteger[] data = createData(POPUlATION);
 
         DataStation station = new DataStation("1", data);
-        SecretPart secret = generateSecret(Arrays.asList(station)).getParts()[0];
+        SecretPart secret = generateSecret(Arrays.asList(station), precision).getParts()[0];
 
         station.setLocalSecret(secret);
 

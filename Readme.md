@@ -23,8 +23,7 @@ If you want to calculate the scalar product protocol of vectors containing decim
 
     **It is important to ensure that your data is rounded properly with no trailing values after your defined precision. Trailing values can result in rounding errors which reduce the precision**
 4) Perform the n-party-scalar-product protocol as normal on these large integers
-5) Divide the result by precisionMultiplier^n, where n is the number of parties involved in the protocol that contain decimal values. This will 
-result in the final result that is accurate up to the selected amount of decimals.
+5) Divide the result by precisionMultiplier^n, where n is the number of parties involved in the protocol as dataproviders. This will result in the final result that is accurate up to the selected amount of decimals.
 
 # Handling a Hybird split
 To handle a Hybrid split in your data include an attributecolumn in all relevant datasets named "locallyPresent" with "bool" as it's type. Locally available data should have the value "TRUE". Missing records are then inserted as a row that has the value "FALSE" for this attribute. This should be handled in a preprocessing step.

@@ -89,12 +89,12 @@ public class Server implements ApplicationContextAware {
     }
 
     @PutMapping ("initRandom")
-    public void initRandom(@RequestBody Integer population) {
+    public void initRandom(@RequestBody Integer population, int precision) {
         //this method exists purely as an example of how to init the secretStations
         reset();
         initEndpoints();
         secretStations.put("start", new SecretStation(endpoints.stream().map(s -> s.getServerId()).collect(
-                Collectors.toList()), population));
+                Collectors.toList()), population, precision));
         this.population = population;
     }
 
@@ -128,10 +128,10 @@ public class Server implements ApplicationContextAware {
         }
     }
 
-    public Server(String serverId, List<Server> servers, int length) {
+    public Server(String serverId, List<Server> servers, int length, int precision) {
         this.serverId = serverId;
         secretStations.put("start", new SecretStation(servers.stream().map(s -> s.getServerId()).collect(
-                Collectors.toList()), length));
+                Collectors.toList()), length, precision));
         this.population = length;
     }
 
@@ -204,7 +204,7 @@ public class Server implements ApplicationContextAware {
 
     @PutMapping ("addSecretStation")
     public void addSecretStation(@RequestBody AddSecretRequest req) {
-        secretStations.put(req.getId(), new SecretStation(req.getServerIds(), req.getLength()));
+        secretStations.put(req.getId(), new SecretStation(req.getServerIds(), req.getLength(), req.getPrecision()));
     }
 
     @PutMapping ("addDatastation")

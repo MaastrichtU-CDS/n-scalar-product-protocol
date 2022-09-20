@@ -27,7 +27,7 @@ public class AttributeRequirement {
     }
 
     public boolean checkRequirement(Attribute attribute) {
-        if (attribute.isUknown()) {
+        if (attribute.isUnknown()) {
             return expectsUnknown();
         } else if (isRange()) {
             return fitsWithinLimits(attribute);
@@ -38,9 +38,9 @@ public class AttributeRequirement {
 
     public boolean expectsUnknown() {
         if (isRange()) {
-            return lowerLimit.isUknown();
+            return lowerLimit.isUnknown();
         } else {
-            return value.isUknown();
+            return value.isUnknown();
         }
     }
 
