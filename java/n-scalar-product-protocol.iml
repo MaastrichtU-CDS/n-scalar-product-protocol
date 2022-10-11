@@ -22,7 +22,7 @@
     <orderEntry type="library" scope="TEST" name="Maven: org.apiguardian:apiguardian-api:1.1.0" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.opentest4j:opentest4j:1.2.0" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.junit.platform:junit-platform-commons:1.7.2" level="project" />
-    <orderEntry type="library" name="Maven: org.springframework.boot:spring-boot-starter-web:2.7.4" level="project" />
+    <orderEntry type="library" name="Maven: org.springframework.boot:spring-boot-starter-web:2.5.6" level="project" />
     <orderEntry type="library" name="Maven: org.springframework.boot:spring-boot-starter:2.5.6" level="project" />
     <orderEntry type="library" name="Maven: org.springframework.boot:spring-boot-starter-logging:2.5.6" level="project" />
     <orderEntry type="library" name="Maven: ch.qos.logback:logback-classic:1.2.6" level="project" />
@@ -37,11 +37,10 @@
     <orderEntry type="library" name="Maven: com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.12.5" level="project" />
     <orderEntry type="library" name="Maven: com.fasterxml.jackson.module:jackson-module-parameter-names:2.12.5" level="project" />
     <orderEntry type="library" name="Maven: org.springframework.boot:spring-boot-starter-tomcat:2.5.6" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.tomcat.embed:tomcat-embed-core:9.0.54" level="project" />
     <orderEntry type="library" name="Maven: org.apache.tomcat.embed:tomcat-embed-el:9.0.54" level="project" />
     <orderEntry type="library" name="Maven: org.apache.tomcat.embed:tomcat-embed-websocket:9.0.54" level="project" />
     <orderEntry type="library" name="Maven: org.springframework:spring-webmvc:5.3.12" level="project" />
-    <orderEntry type="library" name="Maven: org.springframework.boot:spring-boot:2.7.4" level="project" />
+    <orderEntry type="library" name="Maven: org.springframework.boot:spring-boot:2.5.6" level="project" />
     <orderEntry type="library" name="Maven: org.springframework:spring-core:5.3.12" level="project" />
     <orderEntry type="library" name="Maven: org.springframework:spring-jcl:5.3.12" level="project" />
     <orderEntry type="library" name="Maven: org.springframework:spring-web:5.3.12" level="project" />
@@ -49,25 +48,23 @@
     <orderEntry type="library" name="Maven: org.springframework:spring-context:5.3.12" level="project" />
     <orderEntry type="library" name="Maven: org.springframework:spring-aop:5.3.12" level="project" />
     <orderEntry type="library" name="Maven: org.springframework:spring-expression:5.3.12" level="project" />
-    <orderEntry type="library" name="Maven: org.springframework.boot:spring-boot-autoconfigure:2.7.4" level="project" />
+    <orderEntry type="library" name="Maven: org.springframework.boot:spring-boot-autoconfigure:2.5.6" level="project" />
     <orderEntry type="library" name="Maven: com.opencsv:opencsv:5.3" level="project" />
     <orderEntry type="library" name="Maven: org.apache.commons:commons-lang3:3.12.0" level="project" />
     <orderEntry type="library" name="Maven: org.apache.commons:commons-text:1.9" level="project" />
     <orderEntry type="library" name="Maven: commons-beanutils:commons-beanutils:1.9.4" level="project" />
     <orderEntry type="library" name="Maven: org.apache.commons:commons-collections4:4.4" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.parquet:parquet-avro:1.12.3" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.parquet:parquet-column:1.12.3" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.parquet:parquet-encoding:1.12.3" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.yetus:audience-annotations:0.13.0" level="project" />
     <orderEntry type="library" name="Maven: org.apache.parquet:parquet-hadoop:1.12.3" level="project" />
     <orderEntry type="library" name="Maven: org.apache.parquet:parquet-format-structures:1.12.3" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.parquet:parquet-common:1.12.3" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="Maven: org.apache.parquet:parquet-jackson:1.12.3" level="project" />
+    <orderEntry type="library" name="Maven: org.xerial.snappy:snappy-java:1.1.8.3" level="project" />
     <orderEntry type="library" name="Maven: commons-pool:commons-pool:1.6" level="project" />
     <orderEntry type="library" name="Maven: com.github.luben:zstd-jni:1.5.0-1" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.parquet:parquet-common:1.12.3" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.avro:avro:1.10.2" level="project" />
-    <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-core:2.12.5" level="project" />
     <orderEntry type="library" name="Maven: org.slf4j:slf4j-api:1.7.32" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.yetus:audience-annotations:0.13.0" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.parquet:parquet-column:1.12.3" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.parquet:parquet-encoding:1.12.3" level="project" />
     <orderEntry type="library" name="Maven: org.apache.hadoop:hadoop-common:3.3.4" level="project" />
     <orderEntry type="library" name="Maven: org.apache.hadoop.thirdparty:hadoop-shaded-protobuf_3_7:1.1.1" level="project" />
     <orderEntry type="library" name="Maven: org.apache.hadoop:hadoop-annotations:3.3.4" level="project" />
@@ -114,6 +111,8 @@
     <orderEntry type="library" name="Maven: ch.qos.reload4j:reload4j:1.2.22" level="project" />
     <orderEntry type="library" name="Maven: org.apache.commons:commons-configuration2:2.1.1" level="project" />
     <orderEntry type="library" name="Maven: org.slf4j:slf4j-reload4j:1.7.36" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.avro:avro:1.7.7" level="project" />
+    <orderEntry type="library" name="Maven: com.thoughtworks.paranamer:paranamer:2.3" level="project" />
     <orderEntry type="library" name="Maven: com.google.re2j:re2j:1.1" level="project" />
     <orderEntry type="library" name="Maven: com.google.protobuf:protobuf-java:2.5.0" level="project" />
     <orderEntry type="library" name="Maven: com.google.code.gson:gson:2.8.8" level="project" />
@@ -158,9 +157,11 @@
     <orderEntry type="library" name="Maven: org.apache.kerby:kerby-util:1.0.1" level="project" />
     <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-databind:2.12.5" level="project" />
     <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-annotations:2.12.5" level="project" />
+    <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-core:2.12.5" level="project" />
     <orderEntry type="library" name="Maven: org.codehaus.woodstox:stax2-api:4.2.1" level="project" />
     <orderEntry type="library" name="Maven: com.fasterxml.woodstox:woodstox-core:5.3.0" level="project" />
     <orderEntry type="library" name="Maven: dnsjava:dnsjava:2.1.7" level="project" />
-    <orderEntry type="library" name="Maven: org.xerial.snappy:snappy-java:1.1.8.2" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.tomcat.embed:tomcat-embed-core:9.0.54" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.tomcat:tomcat-annotations-api:9.0.54" level="project" />
   </component>
 </module>

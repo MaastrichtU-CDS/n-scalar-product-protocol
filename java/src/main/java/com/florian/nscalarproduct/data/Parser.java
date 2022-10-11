@@ -1,5 +1,6 @@
 package com.florian.nscalarproduct.data;
 
+import com.florian.nscalarproduct.error.InvalidDataFormatException;
 import com.opencsv.CSVReader;
 import com.opencsv.exceptions.CsvValidationException;
 import org.apache.hadoop.conf.Configuration;
@@ -18,9 +19,7 @@ import org.apache.parquet.schema.Type;
 
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 
 public final class Parser {
@@ -29,7 +28,73 @@ public final class Parser {
     private Parser() {
     }
 
-    public static Data parseParquet(String path, int idColumn) throws IOException {
+    public static Data parseData(String path, int idColumn) throws IOException, InvalidDataFormatException {
+        if (path.contains(".arff")) {
+            return parseArff(path, idColumn);
+        } else if (path.contains(".csv")) {
+            return parseCsv(path, idColumn);
+        } else if (path.contains(".parquet")) {
+            return parseParquet(path, idColumn);
+        } else {
+            throw new InvalidDataFormatException();
+        }
+    }
+
+    private static Data parseArff(String path, int idColumn) throws IOException {
+        List<List<String>> records = readCsv(path);
+        Map<String, Attribute> attributes = new HashMap<>();
+        int locallyPresentColumn = -1;
+
+        List<List<Attribute>> parsed = new ArrayList<>();
+
+        int data = 0;
+        for (int i = 0; i < records.size(); i++) {
+            String start = records.get(i).get(0);
+            if (start.contains("@attribute")) {
+                //get name
+                String name = start.replace("@attribute ", "");
+                name = name.substring(0, name.indexOf(" "));
+
+                //get type
+                String type = "";
+                if (start.contains("real")) {
+                    type = "real";
+                } else if (start.contains("numeric")) {
+                    type = "numeric";
+                } else if (start.toLowerCase().contains("true") || start.toLowerCase().contains("false")) {
+                    type = "bool";
+                } else {
+                    type = "string";
+                }
+                Attribute a = new Attribute();
+                a.setAttributeName(name);
+                a.setType(Attribute.AttributeType.valueOf(type));
+                attributes.put(name, a);
+            } else if (start.contains("@data")) {
+                //reached datablock
+                data = i + 1;
+                break;
+            }
+        }
+        List<String> attributeOrder = records.get(data);
+        data++;
+        for (int i = 0; i < attributeOrder.size(); i++) {
+            String name = attributeOrder.get(i);
+            List<Attribute> attribute = new ArrayList<>();
+            for (int j = data; j < records.size(); j++) {
+                attribute.add(new Attribute(attributes.get(name).getType(), records.get(j).get(i),
+                                            name));
+            }
+            parsed.add(attribute);
+            if (attribute.get(0).getAttributeName().equals(LOCALLY_PRESENT_COLUMN_NAME)) {
+                locallyPresentColumn = i;
+            }
+        }
+
+        return new Data(idColumn, locallyPresentColumn, parsed);
+    }
+
+    private static Data parseParquet(String path, int idColumn) throws IOException {
         List<SimpleGroup> simpleGroups = new ArrayList<>();
         ParquetFileReader reader = ParquetFileReader.open(
                 HadoopInputFile.fromPath(new Path(path), new Configuration(true)));
@@ -82,7 +147,7 @@ public final class Parser {
         return "";
     }
 
-    public static Data parseCsv(String path, int idColumn) {
+    private static Data parseCsv(String path, int idColumn) {
         List<List<String>> records = readCsv(path);
         List<String> types = records.get(0);
         List<String> attributes = records.get(1);
