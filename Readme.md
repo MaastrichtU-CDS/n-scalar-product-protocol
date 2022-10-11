@@ -31,3 +31,15 @@ To handle a Hybrid split in your data include an attributecolumn in all relevant
 Important to note; datasets still need to have the same ordering for their records. It is assumed that recordlinkage is handled in a preprocessing step as well.
 
 This functionality is only available in the java implementation.
+
+# Data format:
+The following file-types can be used as databases: 
+- csv
+- arff
+- parquet
+
+In the case of a csv two header rows are expect. Row 1 contains attribute types, row 2 contains attribute names.
+A script to convert from CSV to parquet can be found in ./script.
+
+# Python v.s. Java
+The python version was originally developed to compare run-time performances and the ease of implementation within vantage6. It is currently several iterations behind and does not have all funcitonality.
