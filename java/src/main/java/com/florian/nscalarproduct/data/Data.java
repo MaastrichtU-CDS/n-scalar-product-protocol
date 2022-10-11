@@ -93,6 +93,14 @@ public class Data {
 
     public static Set<String> getUniqueValues(List<Attribute> attributeValues) {
         Set<String> unique = new HashSet<>();
+
+        if (attributeValues.get(0).getType().equals(Attribute.AttributeType.bool)) {
+            //quickly create boolean if type is boolean instead of looping over the entire list
+            unique.add("true");
+            unique.add("false");
+            return unique;
+        }
+
         for (Attribute att : attributeValues) {
             unique.add(att.getValue());
         }
