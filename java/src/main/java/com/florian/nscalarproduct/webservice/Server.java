@@ -286,4 +286,8 @@ public class Server implements ApplicationContextAware {
             }
         }
     }
+
+    public List<ServerEndpoint> getEndpoints() {
+        return endpoints;
+    }
 }
