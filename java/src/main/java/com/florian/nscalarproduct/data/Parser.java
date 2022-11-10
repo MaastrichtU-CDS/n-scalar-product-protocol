@@ -114,7 +114,7 @@ public final class Parser {
 
         List<Type> types = schema.getFields();
         List<List<Attribute>> parsed = new ArrayList<>();
-        int locallyPresentColumn = 0;
+        int locallyPresentColumn = -1;
         for (int i = 0; i < types.size(); i++) {
             List<Attribute> attribute = new ArrayList<>();
             String type = transformtype(types.get(i));
