@@ -5,15 +5,34 @@ import java.math.BigInteger;
 import java.util.Random;
 
 public class PublicPaillierKey {
-    private final int bits;
-    private final BigInteger n;
-    private final BigInteger nSquared;
-    private final BigInteger g;
+    private int bits;
+    private BigInteger n;
+    private BigInteger nSquared;
+    private BigInteger g;
+
+    public PublicPaillierKey() {
+    }
 
     public PublicPaillierKey(BigInteger n, BigInteger nSquared, BigInteger g, int bits) {
         this.n = n;
         this.nSquared = nSquared;
         this.bits = bits;
+        this.g = g;
+    }
+
+    public void setBits(int bits) {
+        this.bits = bits;
+    }
+
+    public void setN(BigInteger n) {
+        this.n = n;
+    }
+
+    public void setnSquared(BigInteger nSquared) {
+        this.nSquared = nSquared;
+    }
+
+    public void setG(BigInteger g) {
         this.g = g;
     }
 
