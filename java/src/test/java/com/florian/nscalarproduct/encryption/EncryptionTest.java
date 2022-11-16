@@ -16,6 +16,21 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class EncryptionTest {
     private static int PRECISION = 10000;
 
+    @Test
+    public void additivePaillierEncryption() {
+        BigInteger a = BigInteger.valueOf(2).pow(1);
+        BigInteger b = BigInteger.valueOf(3).pow(1);
+
+        Paillier paillier = new Paillier();
+        paillier.generateKeyPair();
+        PublicPaillierKey p = paillier.getPublicKey();
+
+        BigInteger eA = p.encrypt(a);
+        BigInteger eB = p.encrypt(b);
+        System.out.println(paillier.decrypt(eA.multiply(eB)));
+
+    }
+
 
     @Test
     public void testEncryptions() {
