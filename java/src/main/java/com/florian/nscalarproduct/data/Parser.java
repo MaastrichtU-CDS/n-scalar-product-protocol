@@ -51,9 +51,9 @@ public final class Parser {
         List<String> attributeOrder = new ArrayList<>();
         for (int i = 0; i < records.size(); i++) {
             String start = records.get(i).get(0);
-            if (start.contains("@attribute")) {
+            if (start.toLowerCase().contains("@attribute")) {
                 //get name
-                String name = start.replace("@attribute ", "");
+                String name = start.replaceAll("(?i)@attribute ", "");
                 name = name.substring(0, name.indexOf(" "));
                 attributeOrder.add(name);
                 //get type
@@ -71,7 +71,7 @@ public final class Parser {
                 a.setAttributeName(name);
                 a.setType(Attribute.AttributeType.valueOf(type));
                 attributes.put(name, a);
-            } else if (start.contains("@data")) {
+            } else if (start.toLowerCase().contains("@data")) {
                 //reached datablock
                 data = i;
                 break;
