@@ -1,12 +1,12 @@
 @relation allTypes
 
-@attribute locallyPresent {FALSE,TRUE}
-@attribute x2 {0,1}
-@attribute x1 real
+
 @attribute ID numeric
+@attribute x1 real
+@attribute x2 {0,1}
+@attribute locallyPresent {FALSE,TRUE}
 
 @data
-ID,x1,x2,locallyPresent
 1,1,0,FALSE
 2,1,1,FALSE
 3,0,0,FALSE

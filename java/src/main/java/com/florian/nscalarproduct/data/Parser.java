@@ -48,13 +48,14 @@ public final class Parser {
         List<List<Attribute>> parsed = new ArrayList<>();
 
         int data = 0;
+        List<String> attributeOrder = new ArrayList<>();
         for (int i = 0; i < records.size(); i++) {
             String start = records.get(i).get(0);
             if (start.contains("@attribute")) {
                 //get name
                 String name = start.replace("@attribute ", "");
                 name = name.substring(0, name.indexOf(" "));
-
+                attributeOrder.add(name);
                 //get type
                 String type = "";
                 if (start.contains("real")) {
@@ -72,11 +73,10 @@ public final class Parser {
                 attributes.put(name, a);
             } else if (start.contains("@data")) {
                 //reached datablock
-                data = i + 1;
+                data = i;
                 break;
             }
         }
-        List<String> attributeOrder = records.get(data);
         data++;
         for (int i = 0; i < attributeOrder.size(); i++) {
             String name = attributeOrder.get(i);
