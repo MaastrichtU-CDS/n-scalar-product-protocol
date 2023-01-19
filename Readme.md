@@ -43,3 +43,14 @@ A script to convert from CSV to parquet can be found in ./script.
 
 # Python v.s. Java
 The python version was originally developed to compare run-time performances and the ease of implementation within vantage6. It is currently several iterations behind and does not have all funcitonality.
+
+# How to use this code as a library
+To use this project as a library can simply include the jar as a dependency in your maven project.
+For examples of how to include it in your own project please have a look at the following projects:
+
+- https://github.com/MaastrichtU-CDS/vertibayes
+- https://github.com/MaastrichtU-CDS/bayesianEnsemble
+- https://github.com/CARRIER-project/verticox
+
+Vertibayes and BayesianEnsemble are pure java projects that use the n-party protocol as a library. These projects show how to initiallize the data correctly and utilize the calculations to perform the K2 algorithm as well as the Maximum likelihood for a bayesian network.
+Verticox is a mixed java-python project, where the java project purely exists to open the the n-party protocol library functionality for use within the python code. The python code determines which data is to be used and then triggers the calculation.
