@@ -14,9 +14,6 @@ jobs:
         with:
           java-version: '15'
           distribution: 'adopt'
-      - name: version
-        working-directory: ./java
-        run: mvn -v
       - name: Publish package
         working-directory: ./java
         run: mvn --batch-mode deploy
