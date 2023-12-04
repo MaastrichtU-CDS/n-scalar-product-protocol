@@ -69,6 +69,7 @@ public class ServerEndpoint {
         RetrieveSecretRequest req = new RetrieveSecretRequest();
         req.setId(id);
         req.setSource(source);
+        System.out.println("DE URL BIJ RETRIEVESECRET: " + serverUrl);
         if (testing) {
             server.retrieveSecret(req);
         } else {
@@ -161,6 +162,7 @@ public class ServerEndpoint {
     }
 
     public String getServerId() {
+        System.out.println("DE URL BIJ GETSERVERID: " + serverUrl);
         if (testing) {
             return server.getServerId();
         }
