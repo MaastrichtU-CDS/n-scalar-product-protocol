@@ -166,7 +166,12 @@ public class ServerEndpoint {
         if (testing) {
             return server.getServerId();
         }
-        return REST_TEMPLATE.getForEntity(serverUrl + "/getServerId", String.class).getBody();
+        try {
+            return REST_TEMPLATE.getForEntity(serverUrl + "/getServerId", String.class).getBody();
+        } catch (Exception e) {
+            System.out.println("FOUT BIJ AANROEPEN SERVER [" + serverUrl + "] ERROR: " + e.getMessage());
+            throw e;
+        }
     }
 
     public int getPopulation() {

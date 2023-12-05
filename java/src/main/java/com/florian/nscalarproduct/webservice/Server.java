@@ -200,6 +200,7 @@ public class Server implements ApplicationContextAware {
             }
             dataStations.get(req.getId()).setLocalSecret(end.getSecretPart(req.getId(), serverId));
         }
+
         return false;
     }
 
