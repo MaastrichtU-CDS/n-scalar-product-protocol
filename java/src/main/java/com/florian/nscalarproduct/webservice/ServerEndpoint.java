@@ -69,7 +69,6 @@ public class ServerEndpoint {
         RetrieveSecretRequest req = new RetrieveSecretRequest();
         req.setId(id);
         req.setSource(source);
-        System.out.println("DE URL BIJ RETRIEVESECRET: " + serverUrl);
         if (testing) {
             server.retrieveSecret(req);
         } else {
@@ -162,16 +161,10 @@ public class ServerEndpoint {
     }
 
     public String getServerId() {
-        System.out.println("DE URL BIJ GETSERVERID: " + serverUrl);
         if (testing) {
             return server.getServerId();
         }
-        try {
-            return REST_TEMPLATE.getForEntity(serverUrl + "/getServerId", String.class).getBody();
-        } catch (Exception e) {
-            System.out.println("FOUT BIJ AANROEPEN SERVER [" + serverUrl + "] ERROR: " + e.getMessage());
-            throw e;
-        }
+        return REST_TEMPLATE.getForEntity(serverUrl + "/getServerId", String.class).getBody();
     }
 
     public int getPopulation() {

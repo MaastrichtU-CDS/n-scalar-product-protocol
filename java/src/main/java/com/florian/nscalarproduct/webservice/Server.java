@@ -193,14 +193,12 @@ public class Server implements ApplicationContextAware {
 
     private boolean retrieveSecret(RetrieveSecretRequest req, ServerEndpoint end)
             throws NoSuchAlgorithmException, InvalidKeySpecException {
-        System.out.println("SERVER " + this.serverId + " IS RETRIEVING THE URL");
         if (end.getServerId().equals(req.getSource())) {
             if (end.getSecretPart(req.getId(), serverId) == null) {
                 return true;
             }
             dataStations.get(req.getId()).setLocalSecret(end.getSecretPart(req.getId(), serverId));
         }
-
         return false;
     }
 
