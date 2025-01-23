@@ -65,7 +65,7 @@ public class DataTest {
         //This will spit out a crapton of logging
         //This only happens when testing, does not happen when actually running
         //Can't figure out how the hell to turn that off
-        Data d2 = parseData("resources/Experiments/k2/unknown.parquet", 0);
+        Data d2 = parseData("resources/script/unknown.parquet", 0);
 
         //the first row contains unknown values
         assertTrue(d2.getData().get(1).get(0).isUnknown());

@@ -16,8 +16,8 @@ for i, col in enumerate(no_headers.columns):
     elif headers[i] == "real":
         no_headers[col] = no_headers[col].astype('float')
 
-parquet_file = 'allTypes.parquet'
+parquet_file = 'unknown.parquet'
 no_headers.to_parquet(parquet_file)
 
-parquet = pandas.read_parquet('allTypes.parquet')
+parquet = pandas.read_parquet('unknown.parquet')
 print()
