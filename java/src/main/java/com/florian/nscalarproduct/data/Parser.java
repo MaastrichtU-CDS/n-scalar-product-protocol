@@ -120,9 +120,22 @@ public final class Parser {
             String type = transformtype(types.get(i));
             for (int j = 0; j < simpleGroups.size(); j++) {
                 SimpleGroup ind = simpleGroups.get(j);
+
+//              Parquet cannot handle "?" as a missing value for ints, bools etc.
+//              As such parquet will using empty values for missing values
+//              However, this causes getValueToString to crash, as an empty value does not convert
+//              To deal with this we use a try-catch. If the value cannot be converted we treat it as unknown
+                String value = "";
+                try {
+                    value = simpleGroups.get(j).getValueToString(i, 0);
+                } catch (Exception e) {
+                    value = "?";
+                }
                 attribute.add(
-                        new Attribute(Attribute.AttributeType.valueOf(type), simpleGroups.get(j).getValueToString(i, 0),
+                        new Attribute(Attribute.AttributeType.valueOf(type),
+                                      value,
                                       types.get(i).getName()));
+
             }
             parsed.add(attribute);
             if (attribute.get(0).getAttributeName().equals(LOCALLY_PRESENT_COLUMN_NAME)) {
