@@ -87,6 +87,17 @@ public class DataStationTest {
         return data;
     }
 
+    public static BigInteger[] createDataFrom2ToMax(int population, int max) {
+        BigInteger[] data = new BigInteger[population];
+
+        BigInteger[] secretDiagonal = new BigInteger[population];
+        Random random = new Random();
+        for (int i = 0; i < population; i++) {
+            data[i] = BigInteger.valueOf(random.nextInt(max));
+        }
+        return data;
+    }
+
     public static BigDecimal[] createDoubleData(int precision, int population) {
         BigDecimal[] data = new BigDecimal[population];
 

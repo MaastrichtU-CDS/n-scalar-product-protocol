@@ -28,7 +28,100 @@ public class EncryptionTest {
         BigInteger eA = p.encrypt(a);
         BigInteger eB = p.encrypt(b);
         System.out.println(paillier.decrypt(eA.multiply(eB)));
+    }
 
+    @Test
+    public void nPartyPallier() {
+        List<BigInteger> a = new ArrayList<>();
+        List<BigInteger> b = new ArrayList<>();
+        long elgamalStart = System.currentTimeMillis();
+        a.add(BigInteger.ONE);
+        a.add(BigInteger.ZERO);
+        a.add(BigInteger.ONE);
+
+        b.add(BigInteger.ONE);
+        b.add(BigInteger.ONE);
+        b.add(BigInteger.ZERO);
+
+        List<BigInteger> eA = new ArrayList<>();
+
+        Paillier paillier = new Paillier();
+        paillier.generateKeyPair();
+        PublicPaillierKey p = paillier.getPublicKey();
+
+        for (BigInteger i : a) {
+            eA.add(p.encrypt(i));
+        }
+
+        for (int i = 0; i < eA.size(); i++) {
+            BigInteger old = eA.get(i);
+            BigInteger n = BigInteger.ZERO;
+            if (b.get(i).equals(BigInteger.ZERO)) {
+                n = p.encrypt(b.get(i));
+            } else {
+                n = eA.get(i).multiply(p.encrypt(BigInteger.ZERO));
+            }
+            if (old.equals(n)) {
+                System.out.println("MATCHES!!");
+            }
+            eA.set(i, n);
+        }
+
+
+        BigInteger x = BigInteger.ONE;
+        for (int i = 0; i < eA.size(); i++) {
+            System.out.println(paillier.decrypt(eA.get(i)));
+            x = x.multiply(eA.get(i));
+        }
+    }
+
+    @Test
+    public void nPartyPallierDecimal() {
+        List<BigInteger> a = new ArrayList<>();
+        List<BigInteger> b = new ArrayList<>();
+        long elgamalStart = System.currentTimeMillis();
+        a.add(BigInteger.valueOf(54457));
+        a.add(BigInteger.valueOf(14742));
+
+        b.add(BigInteger.valueOf(88722));
+        b.add(BigInteger.valueOf(38256));
+
+
+        List<BigInteger> eA = new ArrayList<>();
+
+        Paillier paillier = new Paillier();
+        paillier.generateKeyPair();
+        PublicPaillierKey p = paillier.getPublicKey();
+
+        for (BigInteger i : a) {
+            eA.add(p.encrypt(i));
+        }
+
+        for (int i = 0; i < eA.size(); i++) {
+            BigInteger old = eA.get(i);
+            BigInteger n = BigInteger.ZERO;
+            if (b.get(i).equals(BigInteger.ZERO)) {
+                n = p.encrypt(b.get(i));
+            } else if (b.get(i).equals(BigInteger.ONE)) {
+                n = eA.get(i).multiply(p.encrypt(BigInteger.ZERO));
+            } else {
+                n = eA.get(i).pow(b.get(i).intValue());
+            }
+            if (old.equals(n)) {
+                System.out.println("MATCHES!!");
+            }
+            eA.set(i, n);
+        }
+
+
+        BigInteger x = BigInteger.ONE;
+        for (int i = 0; i < eA.size(); i++) {
+            System.out.println(paillier.decrypt(eA.get(i)));
+            x = x.multiply(eA.get(i));
+        }
+
+        System.out.println(new BigDecimal(paillier.decrypt(x)).divide(BigDecimal.valueOf(100000))
+                                   .divide(BigDecimal.valueOf(100000)));
     }
 
 
